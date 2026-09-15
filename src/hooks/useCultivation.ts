@@ -18,9 +18,9 @@ import {
   qiNeeded,
   qiRate,
   realmTitle,
-  rollEncounter,
   stageIndex,
 } from "@/lib/cultivation";
+import { TEXT_STREAM_EVENTS } from "@/data/textStreamEvents";
 import { rollModalEvent, type ModalEventData, type AdventureReward } from "@/utils/adventureLogic";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
