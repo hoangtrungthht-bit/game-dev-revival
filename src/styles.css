@@ -204,17 +204,69 @@
   }
 }
 
+@keyframes event-modal-in {
+  from { opacity: 0; transform: translateY(18px) scale(0.94); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes breakthrough-aura {
+  0%, 100% { box-shadow: 0 0 24px oklch(0.82 0.13 85 / 0.4), inset 0 0 28px oklch(0.82 0.13 85 / 0.08); }
+  50% { box-shadow: 0 0 68px oklch(0.82 0.13 85 / 0.8), 0 0 120px oklch(0.82 0.13 85 / 0.2), inset 0 0 42px oklch(0.82 0.13 85 / 0.16); }
+}
+
+@keyframes breakthrough-spark {
+  0%, 100% { opacity: 0.65; transform: rotate(-8deg) scale(0.9); }
+  50% { opacity: 1; transform: rotate(8deg) scale(1.15); }
+}
+
+@keyframes claim-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
 .event-toast {
-  animation: event-toast-in 220ms ease-out both;
+  animation: event-toast-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  box-shadow: 0 0 24px oklch(0.82 0.13 85 / 0.2);
 }
 
 .event-toast-major {
   animation: event-toast-in 260ms ease-out both, realm-aura 1.15s ease-in-out infinite;
 }
 
+.event-overlay { animation: event-toast-in 220ms ease-out both; }
+
+.event-modal {
+  animation: event-modal-in 360ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  background-image: radial-gradient(circle at 50% 0%, oklch(0.82 0.13 85 / 0.12), transparent 48%);
+}
+
+.breakthrough-modal {
+  animation: event-modal-in 480ms cubic-bezier(0.16, 1, 0.3, 1) both, breakthrough-aura 2.2s ease-in-out infinite;
+  background-image:
+    linear-gradient(oklch(0.82 0.13 85 / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, oklch(0.82 0.13 85 / 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 50% 15%, oklch(0.82 0.13 85 / 0.18), transparent 48%);
+  background-size: 28px 28px, 28px 28px, auto;
+}
+
+.breakthrough-spark { animation: breakthrough-spark 1.4s ease-in-out infinite; }
+
+.breakthrough-claim {
+  background-image: linear-gradient(110deg, var(--color-primary) 35%, var(--color-foreground) 50%, var(--color-primary) 65%);
+  background-size: 250% 100%;
+  animation: claim-shimmer 2.4s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .event-toast,
   .event-toast-major {
+    animation: none;
+  }
+  .event-overlay,
+  .event-modal,
+  .breakthrough-modal,
+  .breakthrough-spark,
+  .breakthrough-claim {
     animation: none;
   }
 }

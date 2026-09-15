@@ -31,6 +31,23 @@ export interface GameNotice {
   sound?: "breakthrough" | "alchemy" | "resource";
 }
 
+export interface BreakthroughResult {
+  id: number;
+  name: string;
+  rootTitle: string;
+  realmTitle: string;
+  realmIndex: number;
+  absorptionBonus: number;
+  lifespanBonus: number;
+}
+
+export interface EventResult {
+  id: number;
+  title: string;
+  text: string;
+  success: boolean;
+}
+
 let logId = 100;
 
 function pushLog(log: LogEntry[], text: string, kind: LogEntry["kind"]): LogEntry[] {
@@ -42,6 +59,8 @@ export function useCultivation() {
   const [loaded, setLoaded] = useState(false);
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
+  const [breakthroughResult, setBreakthroughResult] = useState<BreakthroughResult | null>(null);
+  const [eventResult, setEventResult] = useState<EventResult | null>(null);
   const lastTick = useRef(0);
 
   // Nạp dữ liệu đã lưu (chỉ chạy trên trình duyệt)
@@ -164,7 +183,15 @@ export function useCultivation() {
         const text = major
           ? `Thiên kiếp giáng lâm! Ngươi cắn răng chịu đủ chín đạo lôi đình, đột phá tới ${title}!`
           : `Kinh mạch thông suốt, ngươi tiến vào ${title}.`;
-        announce(text, major ? "major" : "minor", "breakthrough");
+        setBreakthroughResult({
+          id: ++logId,
+          name: s.name,
+          rootTitle: s.root ? rootTitle(s.root) : "Phàm thể chưa khai mở",
+          realmTitle: title,
+          realmIndex: realm,
+          absorptionBonus: 8 + realm * 4 + level,
+          lifespanBonus: 12 + realm * 18 + level * 2,
+        });
         return {
           ...s,
           realm,
@@ -318,11 +345,7 @@ export function useCultivation() {
       if (win && option.rewards.herbQty && herbName) text += ` (+${option.rewards.herbQty} ${herbName})`;
       if (reward.artifactText) text += reward.artifactText;
 
-      announce(
-        `${event.title}: ${text}`,
-        win ? "gain" : "loss",
-        win ? "resource" : undefined,
-      );
+      setEventResult({ id: ++logId, title: event.title, text, success: win });
 
       return {
         ...s,
@@ -378,6 +401,9 @@ export function useCultivation() {
 
   const reset = useCallback(() => {
     setState(newGame());
+    setFlash(null);
+    setBreakthroughResult(null);
+    setEventResult(null);
     try {
       localStorage.removeItem(SAVE_KEY);
     } catch {
@@ -385,11 +411,16 @@ export function useCultivation() {
     }
   }, []);
 
+  const clearBreakthroughResult = useCallback(() => setBreakthroughResult(null), []);
+  const clearEventResult = useCallback(() => setEventResult(null), []);
+
   return {
     state,
     now,
     loaded,
     flash,
-    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure },
+    breakthroughResult,
+    eventResult,
+    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, clearBreakthroughResult, clearEventResult },
   };
 }

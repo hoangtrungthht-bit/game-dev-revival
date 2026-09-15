@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AlertTriangle, CheckCircle2, FlaskConical, Sparkles } from "lucide-react";
+import { AlertTriangle, CheckCircle2, FlaskConical, Sparkles, Trophy } from "lucide-react";
 import type { GameNotice } from "@/hooks/useCultivation";
 import { cn } from "@/lib/utils";
 
@@ -8,6 +8,7 @@ const ICONS = {
   alchemy: FlaskConical,
   gain: Sparkles,
   loss: AlertTriangle,
+  major: Trophy,
 };
 
 export function ToastNotification({ notice }: { notice: GameNotice }) {
