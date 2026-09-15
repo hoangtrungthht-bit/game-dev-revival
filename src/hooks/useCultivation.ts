@@ -18,9 +18,9 @@ import {
   qiNeeded,
   qiRate,
   realmTitle,
-  rollEncounter,
   stageIndex,
 } from "@/lib/cultivation";
+import { TEXT_STREAM_EVENTS } from "@/data/textStreamEvents";
 import { rollModalEvent, type ModalEventData, type AdventureReward } from "@/utils/adventureLogic";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
@@ -274,7 +274,6 @@ export function useCultivation() {
   const explore = useCallback(() => {
     setState((s) => {
       if (Date.now() < s.exploringUntil) return s;
-      const stage = stageIndex(s);
 
       // 5% kích hoạt Kỳ Ngộ modal
       if (Math.random() < 0.05) {
@@ -287,45 +286,16 @@ export function useCultivation() {
         };
       }
 
-      const e = rollEncounter(stage, Math.random);
-      const herbs = { ...s.herbs };
-      if (e.herb && e.herbQty) herbs[e.herb] += e.herbQty;
-      let artifacts = s.artifacts;
-      let text = e.text;
-      if (e.artifact) {
-        const pool = ARTIFACTS.filter(
-          (a) => !s.artifacts.includes(a.id) && a.mult <= 0.4 + stage * 0.12,
-        );
-        const got = pool[Math.floor(Math.random() * pool.length)];
-        if (got) {
-          artifacts = [...artifacts, got.id];
-          text += ` Ngươi nhận được ${got.name} (${got.rarity})!`;
-        } else {
-          text += " Tiếc thay bên trong chỉ còn lại bụi trần.";
-        }
-      }
-      const herbName = e.herb ? HERBS.find((h) => h.id === e.herb)!.name : "";
-      if (e.herb && e.herbQty) text += ` (+${e.herbQty} ${herbName})`;
-      const isLargeCultivationChange = Math.abs(e.qiPct ?? 0) >= 0.15;
-      if (isLargeCultivationChange) {
-        announce(
-          e.qiPct && e.qiPct > 0
-            ? `Kỳ ngộ bùng nổ tu vi! ${text}`
-            : `Tu vi tổn thất! ${text}`,
-          e.qiPct && e.qiPct > 0 ? "gain" : "loss",
-          e.qiPct && e.qiPct > 0 ? "resource" : undefined,
-        );
-      } else if ((e.stones ?? 0) > 0 || (e.herbQty ?? 0) > 0 || e.artifact) {
-        setFlash({ id: ++logId, text, kind: "gain", sound: "resource" });
-      }
+      const randomEvent = TEXT_STREAM_EVENTS[Math.floor(Math.random() * TEXT_STREAM_EVENTS.length)]!;
+      const text = randomEvent.message;
+      const kind: LogEntry["kind"] = randomEvent.type === "reward" ? "good" : "bad";
+      setFlash({ id: ++logId, text, kind: "gain", sound: "resource" });
       return {
         ...s,
-        herbs,
-        artifacts,
-        stones: Math.max(0, s.stones + (e.stones ?? 0)),
-        qi: Math.max(0, s.qi + qiNeeded(s) * (e.qiPct ?? 0)),
+        stones: Math.max(0, s.stones + randomEvent.baseLinhThach),
+        qi: Math.max(0, s.qi + randomEvent.baseLinhKhi),
         exploringUntil: Date.now() + 6000,
-        log: pushLog(s.log, text, e.kind),
+        log: pushLog(s.log, text, kind),
       };
     });
   }, [announce]);
