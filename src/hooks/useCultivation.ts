@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ARTIFACTS,
   GameState,
-  HERBS,
   HerbId,
   LogEntry,
   MANUALS,
@@ -303,8 +302,6 @@ export function useCultivation() {
           text += " Tiếc thay bên trong chỉ còn lại bụi trần.";
         }
       }
-      const herbName = e.herb ? HERBS.find((h) => h.id === e.herb)!.name : "";
-      if (e.herb && e.herbQty) text += ` [+ ${e.herbQty} ${herbName}]`;
       const isLargeCultivationChange = Math.abs(e.qiPct ?? 0) >= 0.15;
       if (isLargeCultivationChange) {
         announce(
