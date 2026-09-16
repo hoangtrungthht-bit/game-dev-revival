@@ -6,6 +6,8 @@ export interface AdventureReward {
   qiPct?: number; // tỷ lệ phần trăm so với linh khí cần để lên tầng
   herbId?: string;
   herbQty?: number;
+  pillId?: "tukhi" | "phacanh" | "hotam" | "nguythan";
+  pillQty?: number;
   artifact?: boolean;
 }
 
@@ -169,25 +171,30 @@ export function createQuizEvent(stage: number, realmName: string): QuizEventData
 
 const HERB_LABEL: Record<string, string> = {
   linhthao: "Linh Thảo",
-  huyetchi: "Huyết Chi Thảo",
-  bangnien: "Băng Niên Hoa",
+  huyetchi: "Huyết Chi",
+  bangnien: "Băng Liên",
   longdam: "Long Đảm Thảo",
 };
 
-// Sinh chuỗi tag ở CUỐI câu cho mọi thay đổi chỉ số thực tế (Tu Vi / Linh Thạch / Linh Thảo).
-// Dữ liệu tự chứa sẵn tag; UI chỉ việc in nguyên văn, không qua bộ lọc nào khác.
+const PILL_LABEL: Record<string, string> = {
+  tukhi: "Tụ Khí Đan",
+  phacanh: "Phá Cảnh Đan",
+  hotam: "Hộ Tâm Đan",
+  nguythan: "Ngưng Thần Đan",
+};
+
+// Phần thưởng vật phẩm chỉ được gắn ở nhánh rewards, không bao giờ ở penalties.
 function outcomeTag(delta: AdventureReward | AdventurePenalty): string {
   const parts: string[] = [];
   if (delta.qiPct) {
     parts.push(`[${delta.qiPct > 0 ? "+" : "-"} ${Math.abs(Math.round(delta.qiPct * 100))}% tu vi]`);
   }
-  if (delta.stones) {
-    parts.push(`[${delta.stones > 0 ? "+" : "-"} ${Math.abs(delta.stones)} Linh Thạch]`);
+  const reward = delta as AdventureReward;
+  if (reward.herbId && reward.herbQty) {
+    parts.push(`[+ ${reward.herbQty} ${HERB_LABEL[reward.herbId] ?? "Linh Thảo"}]`);
   }
-  const herbId = (delta as AdventureReward).herbId;
-  const herbQty = (delta as AdventureReward).herbQty;
-  if (herbId && herbQty) {
-    parts.push(`[+ ${herbQty} ${HERB_LABEL[herbId] ?? "Linh Thảo"}]`);
+  if (reward.pillId && reward.pillQty) {
+    parts.push(`[+ ${reward.pillQty} ${PILL_LABEL[reward.pillId]}]`);
   }
   return parts.length ? " " + parts.join(" ") : "";
 }
@@ -220,7 +227,7 @@ const BASE_EVENTS: ModalEventData[] = [
       reqElement: "moc",
       successText: "Cổ mộc công nhận, linh khí mộc hệ gột rửa kinh mạch.",
       failText: "Linh căn không hợp, cổ mộc rút lại linh khí.",
-      rewards: { qiPct: 0.25, herbId: "linhthao", herbQty: 3 },
+      rewards: { qiPct: 0.25, herbId: "linhthao", herbQty: 3, pillId: "tukhi", pillQty: 1 },
       penalties: { qiPct: -0.05 },
     },
     option2: {
@@ -312,7 +319,7 @@ const BASE_EVENTS: ModalEventData[] = [
       reqElement: "tho",
       successText: "Địa mạch hiện lối, ngươi thu được bảo tàng.",
       failText: "Địa mạch bất ổn, ngươi suýt bị vùi lấp.",
-      rewards: { stones: 150, herbId: "huyetchi", herbQty: 2 },
+      rewards: { stones: 150, herbId: "huyetchi", herbQty: 2, pillId: "phacanh", pillQty: 1 },
       penalties: { stones: -20 },
     },
     option2: {
@@ -334,7 +341,7 @@ const BASE_EVENTS: ModalEventData[] = [
       winRate: 0.55,
       successText: "Yêu thú không phát hiện, ngươi thu được huyết liên.",
       failText: "Yêu thú tỉnh giấc, ngươi liều mạng chạy thoát.",
-      rewards: { herbId: "huyetchi", herbQty: 4, stones: 30 },
+      rewards: { herbId: "huyetchi", herbQty: 4, stones: 30, pillId: "hotam", pillQty: 1 },
       penalties: { qiPct: -0.15, stones: -25 },
     },
     option2: {
@@ -581,7 +588,7 @@ const BASE_EVENTS: ModalEventData[] = [
     option1: {
       text: "Mua bí kíp không nguồn gốc",
       winRate: 0.45,
-      successText: "Bí kíp thật! Ngươi học thêm một đoạn khẩu quyết tu luyện.",
+      successText: "Bí kíp thật! Ngươi học thêm một đoạn kh��u quyết tu luyện.",
       failText: "Hàng giả chứa ma khí, ngươi phải tốn công xua đuổi.",
       rewards: { qiPct: 0.15 },
       penalties: { qiPct: -0.12, stones: -40 },
@@ -1033,16 +1040,16 @@ function createExpandedAdventureEvents(): ModalEventData[] {
           text: template.firstText,
           winRate: 0.72,
           ...(reqElement ? { reqElement } : {}),
-          successText: `${template.good} [+ ${template.goodReward.qiPct ? Math.round(template.goodReward.qiPct * 100) + "% tu vi" : template.goodReward.stones ? template.goodReward.stones + " Linh Thạch" : "pháp bảo hiếm"}]`,
-          failText: `${template.bad} [- ${Math.abs(template.badPenalty.qiPct ?? 0) * 100}% tu vi${template.badPenalty.stones ? `, - ${Math.abs(template.badPenalty.stones)} Linh Thạch` : ""}]`,
+          successText: `${template.good}${template.goodReward.qiPct ? ` [+ ${Math.round(template.goodReward.qiPct * 100)}% tu vi]` : ""}`,
+          failText: `${template.bad}${template.badPenalty.qiPct ? ` [- ${Math.abs(template.badPenalty.qiPct) * 100}% tu vi]` : ""}`,
           rewards: template.goodReward,
           penalties: template.badPenalty,
         },
         option2: {
           text: template.secondText,
           winRate: template.secondWin,
-          successText: `${template.good} [+ ${template.secondReward.qiPct ? Math.round(template.secondReward.qiPct * 100) + "% tu vi" : template.secondReward.stones ? template.secondReward.stones + " Linh Thạch" : "pháp bảo hiếm"}]`,
-          failText: `${template.bad} [- ${Math.abs(template.secondPenalty.qiPct ?? 0) * 100}% tu vi${template.secondPenalty.stones ? `, - ${Math.abs(template.secondPenalty.stones)} Linh Thạch` : ""}]`,
+          successText: `${template.good}${template.secondReward.qiPct ? ` [+ ${Math.round(template.secondReward.qiPct * 100)}% tu vi]` : ""}`,
+          failText: `${template.bad}${template.secondPenalty.qiPct ? ` [- ${Math.abs(template.secondPenalty.qiPct) * 100}% tu vi]` : ""}`,
           rewards: template.secondReward,
           penalties: template.secondPenalty,
         },

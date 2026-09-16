@@ -43,7 +43,7 @@ function stoneLog(delta: number, pct: number): string {
 }
 
 function replaceStoneLog(text: string, delta: number, pct: number): string {
-  return `${text.replace(/\\[[+-]\\s*\\d+\\s+Linh Thạch(?:\\s*\\([^\\]]+\\))?\\]/g, "").trim()} ${stoneLog(delta, pct)}`;
+  return `${text.replace(/\[[+-]\s*\d+\s+Linh Thạch(?:\s*\([^\]]+\))?\]/g, "").trim()} ${stoneLog(delta, pct)}`;
 }
 
 function pushLog(log: LogEntry[], text: string, kind: LogEntry["kind"]): LogEntry[] {
@@ -257,10 +257,13 @@ export function useCultivation() {
     s: GameState,
     reward: AdventureReward,
     stage: number,
-  ): { herbs: Record<HerbId, number>; artifacts: string[]; stones: number; qi: number; artifactText: string } => {
+  ): { herbs: Record<HerbId, number>; pills: Record<PillId, number>; artifacts: string[]; stones: number; qi: number; artifactText: string } => {
     const herbs = reward.herbId
       ? { ...s.herbs, [reward.herbId]: s.herbs[reward.herbId as HerbId] + (reward.herbQty ?? 1) }
       : s.herbs;
+    const pills = reward.pillId
+      ? { ...s.pills, [reward.pillId]: s.pills[reward.pillId] + (reward.pillQty ?? 1) }
+      : s.pills;
     let artifacts = s.artifacts;
     let artifactText = "";
     if (reward.artifact) {
@@ -277,6 +280,7 @@ export function useCultivation() {
     }
     return {
       herbs,
+      pills,
       artifacts,
       stones: reward.stones ? Math.max(0, s.stones + reward.stones) : s.stones,
       qi: reward.qiPct ? Math.max(0, s.qi + qiNeeded(s) * reward.qiPct) : s.qi,
