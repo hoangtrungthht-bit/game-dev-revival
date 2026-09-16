@@ -117,7 +117,7 @@ function Game() {
               "root-aura root-panel min-w-0 rounded-xl border bg-card/60 p-4 backdrop-blur sm:p-5",
               state.root && ELEMENT_INFO[state.root.element].dark && GRADE_INFO[state.root.grade].opacity >= 0.5 && "root-panel-dark",
             )}
-            style={rootPanelStyle(state.root)}
+            style={{ ...rootPanelStyle(state.root), ...rootAuraStyle(state.root) }}
           >
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Cảnh giới</p>
             <h2 className="mt-1 font-serif text-2xl text-primary">{realmTitle(state)}</h2>
