@@ -37,19 +37,6 @@ function pushLog(log: LogEntry[], text: string, kind: LogEntry["kind"]): LogEntr
   return [{ id: ++logId, text, kind, time: Date.now() }, ...log].slice(0, 120);
 }
 
-function formatAdventureOutcome(text: string, reward: AdventureReward): string {
-  let formatted = text;
-  if (reward.qiPct && !formatted.includes("tu vi]")) {
-    const sign = reward.qiPct > 0 ? "+" : "-";
-    formatted += ` [${sign} ${Math.abs(reward.qiPct) * 100}% tu vi]`;
-  }
-  if (reward.stones && !formatted.includes("Linh Thạch]")) {
-    const sign = reward.stones > 0 ? "+" : "-";
-    formatted += ` [${sign} ${Math.abs(reward.stones)} Linh Thạch]`;
-  }
-  return formatted;
-}
-
 export function useCultivation() {
   const [state, setState] = useState<GameState>(() => newGame());
   const [loaded, setLoaded] = useState(false);
@@ -317,7 +304,7 @@ export function useCultivation() {
         }
       }
       const herbName = e.herb ? HERBS.find((h) => h.id === e.herb)!.name : "";
-      if (e.herb && e.herbQty) text += ` (+${e.herbQty} ${herbName})`;
+      if (e.herb && e.herbQty) text += ` [+ ${e.herbQty} ${herbName}]`;
       const isLargeCultivationChange = Math.abs(e.qiPct ?? 0) >= 0.15;
       if (isLargeCultivationChange) {
         announce(
@@ -352,14 +339,9 @@ export function useCultivation() {
       const win = meetsReq && Math.random() < option.winRate;
       const reward = applyAdventureRewards(s, win ? option.rewards : option.penalties, stage);
 
-      const herbName =
-        win && option.rewards.herbId
-          ? HERBS.find((h) => h.id === option.rewards.herbId)!.name
-          : "";
+      // Chuỗi text đã chứa sẵn tag [+/- ...] trong file data; chỉ nối thêm tên pháp bảo ngẫu nhiên.
       let text = win ? option.successText : option.failText;
-      if (win && option.rewards.herbQty && herbName) text += ` (+${option.rewards.herbQty} ${herbName})`;
       if (reward.artifactText) text += reward.artifactText;
-      text = formatAdventureOutcome(text, win ? option.rewards : option.penalties);
 
       announce(
         `${event.title}: ${text}`,

@@ -32,7 +32,48 @@ export interface ModalEventData {
   option2: AdventureOption;
 }
 
-const EVENT_TEMPLATES: ModalEventData[] = [
+const HERB_LABEL: Record<string, string> = {
+  linhthao: "Linh Thảo",
+  huyetchi: "Huyết Chi Thảo",
+  bangnien: "Băng Niên Hoa",
+  longdam: "Long Đảm Thảo",
+};
+
+// Sinh chuỗi tag ở CUỐI câu cho mọi thay đổi chỉ số thực tế (Tu Vi / Linh Thạch / Linh Thảo).
+// Dữ liệu tự chứa sẵn tag; UI chỉ việc in nguyên văn, không qua bộ lọc nào khác.
+function outcomeTag(delta: AdventureReward | AdventurePenalty): string {
+  const parts: string[] = [];
+  if (delta.qiPct) {
+    parts.push(`[${delta.qiPct > 0 ? "+" : "-"} ${Math.abs(Math.round(delta.qiPct * 100))}% tu vi]`);
+  }
+  if (delta.stones) {
+    parts.push(`[${delta.stones > 0 ? "+" : "-"} ${Math.abs(delta.stones)} Linh Thạch]`);
+  }
+  const herbId = (delta as AdventureReward).herbId;
+  const herbQty = (delta as AdventureReward).herbQty;
+  if (herbId && herbQty) {
+    parts.push(`[+ ${herbQty} ${HERB_LABEL[herbId] ?? "Linh Thảo"}]`);
+  }
+  return parts.length ? " " + parts.join(" ") : "";
+}
+
+function bakeEvent(e: ModalEventData): ModalEventData {
+  return {
+    ...e,
+    option1: {
+      ...e.option1,
+      successText: e.option1.successText + outcomeTag(e.option1.rewards),
+      failText: e.option1.failText + outcomeTag(e.option1.penalties),
+    },
+    option2: {
+      ...e.option2,
+      successText: e.option2.successText + outcomeTag(e.option2.rewards),
+      failText: e.option2.failText + outcomeTag(e.option2.penalties),
+    },
+  };
+}
+
+const BASE_EVENTS: ModalEventData[] = [
   {
     id: "co_moc_thanh_linh",
     title: "Cổ Mộc Thanh Linh",
@@ -202,7 +243,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.75,
       reqElement: "thuy",
       successText: "Cấm chế như nước chảy qua kẽ tay, ngươi tiến vào.",
-      failText: "Cấm chế quá ph�����c tạp, ngươi bị đẩy ra.",
+      failText: "Cấm chế quá ph������c tạp, ngươi bị đẩy ra.",
       rewards: { artifact: true, stones: 80 },
       penalties: { qiPct: -0.08 },
     },
@@ -367,7 +408,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       penalties: { qiPct: 0.05 },
     },
     option2: {
-      text: "Hái vài bông linh hoa quanh thác rồi đi tiếp",
+      text: "Hái vài bông linh hoa quanh thác rồi đi ti���p",
       winRate: 0.65,
       successText: "Linh hoa hái được đầy tay, thơm ngát cả túi trữ vật.",
       failText: "Dẫm phải bùn lầy, ngươi vừa mất công vừa mất dược liệu.",
@@ -546,7 +587,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
     option2: {
       text: "Đào mộ lấy tài nguyên ngay lập tức",
       winRate: 0.35,
-      successText: "Mộ chứa nhiều linh thạch tùy táng, ngươi thu lợi lớn!",
+      successText: "Mộ chứa nhiều linh thạch tùy táng, ng��ơi thu lợi lớn!",
       failText: "Uy áp c��a mộ chủ trấn xuống, ngươi bỏ chạy trắng tay.",
       rewards: { stones: 160 },
       penalties: { qiPct: -0.15, stones: -30 },
@@ -750,6 +791,10 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       penalties: { qiPct: -0.06 },
     },
   },
+];
+
+const EVENT_TEMPLATES: ModalEventData[] = [
+  ...BASE_EVENTS.map(bakeEvent),
   ...createExpandedAdventureEvents(),
 ];
 

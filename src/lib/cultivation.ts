@@ -302,44 +302,48 @@ export function rollEncounter(stage: number, rng: () => number): Encounter {
     };
   if (roll < 0.5)
     return {
-      text: `Đánh bại một con yêu thú lang thang, thu được ${gold} linh thạch.`,
+      text: `Đánh bại một con yêu thú lang thang. [+ ${gold} Linh Thạch]`,
       kind: "good",
       stones: gold,
     };
   if (roll < 0.62)
     return {
-      text: "Ngươi lạc vào một sơn động cổ, cảm ngộ vết kiếm trên vách đá, linh khí trong người dâng trào.",
+      text: "Ngươi lạc vào một sơn động cổ, cảm ngộ vết kiếm trên vách đá, linh khí trong người dâng trào. [+ 20% tu vi]",
       kind: "good",
       qiPct: 0.2,
     };
-  if (roll < 0.72)
+  if (roll < 0.72) {
+    const spend = Math.min(gold, 20);
     return {
-      text: "Một tán tu bày quầy giữa rừng, ngươi đổi chút vật phẩm lấy dược liệu quý.",
+      text: `Một tán tu bày quầy giữa rừng, ngươi đổi chút vật phẩm lấy dược liệu quý. [- ${spend} Linh Thạch]`,
       kind: "good",
       herb: herb.id,
       herbQty: 2,
-      stones: -Math.min(gold, 20),
+      stones: -spend,
     };
+  }
   if (roll < 0.8)
     return {
-      text: "Trúng mai phục của ma tu! Ngươi liều mạng chạy thoát nhưng khí tức tổn hao.",
+      text: "Trúng mai phục của ma tu! Ngươi liều mạng chạy thoát nhưng khí tức tổn hao. [- 15% tu vi]",
       kind: "bad",
       qiPct: -0.15,
     };
-  if (roll < 0.88)
+  if (roll < 0.88) {
+    const loss = Math.floor(gold / 2);
     return {
-      text: `Bị đám sơn tặc chặn đường, mất ${Math.floor(gold / 2)} linh thạch mua đường.`,
+      text: `Bị đám sơn tặc chặn đường. [- ${loss} Linh Thạch]`,
       kind: "bad",
-      stones: -Math.floor(gold / 2),
+      stones: -loss,
     };
+  }
   if (roll < 0.96)
     return {
-      text: "Ngươi ngồi thiền bên suối linh, một đêm trôi qua như chớp mắt.",
+      text: "Ngươi ngồi thiền bên suối linh, một đêm trôi qua như chớp mắt. [+ 10% tu vi]",
       kind: "info",
       qiPct: 0.1,
     };
   return {
-    text: "Di tích thượng cổ hé mở! Trong quan tài ngọc có một kiện pháp bảo phong ấn.",
+    text: `Di tích thượng cổ hé mở! Trong quan tài ngọc có một kiện pháp bảo phong ấn. [+ ${gold * 2} Linh Thạch]`,
     kind: "epic",
     artifact: true,
     stones: gold * 2,
