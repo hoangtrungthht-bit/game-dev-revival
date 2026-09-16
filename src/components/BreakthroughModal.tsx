@@ -8,6 +8,16 @@ interface BreakthroughModalProps {
   root: SpiritRoot | null;
 }
 
+function spiritRootClass(element: SpiritRoot["element"]) {
+  return {
+    kim: "border-2 border-slate-200/80 bg-slate-100/10 text-slate-100 shadow-[0_0_12px_rgba(226,232,240,0.22)]",
+    moc: "border-2 border-emerald-500/75 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.22)]",
+    thuy: "border-2 border-cyan-500 bg-cyan-950/40 text-cyan-300 shadow-[0_0_16px_rgba(6,182,212,0.36)]",
+    hoa: "border-2 border-red-500/75 bg-red-950/40 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.24)]",
+    tho: "border-2 border-amber-500/80 bg-amber-950/40 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.24)]",
+  }[element];
+}
+
 export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalProps) {
   const data = notice.breakthrough;
   const onCloseRef = useRef(onClose);
@@ -63,7 +73,7 @@ export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalPr
 
           <div className="mt-7 grid gap-3 text-left sm:grid-cols-2">
             <Info label="Đạo hiệu" value={data.name} />
-            <Info label="Thể chất / Linh căn" value={root ? rootTitle(root) : "Chưa khai mở"} />
+            <Info label="Thể chất / Linh căn" value={root ? rootTitle(root) : "Chưa khai mở"} className={root ? spiritRootClass(root.element) : undefined} />
             <Info label="Cảnh giới tiến vào" value={data.realmTitle} highlight />
             <Info label="Linh khí / giây" value={`+${data.qiRateGain.toFixed(1)}`} />
           </div>
@@ -75,8 +85,8 @@ export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalPr
   );
 }
 
-function Info({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
-  return <div className="rounded-lg border border-primary/25 bg-primary/[0.04] px-4 py-3"><p className="text-[10px] uppercase tracking-[0.2em] text-primary/60">{label}</p><p className={`mt-1 font-serif ${highlight ? "text-xl font-bold text-primary" : "text-base text-primary/90"}`}>{value}</p></div>;
+function Info({ label, value, highlight = false, className }: { label: string; value: string; highlight?: boolean; className?: string }) {
+  return <div className={`rounded-lg border border-primary/25 bg-primary/[0.04] px-4 py-3 ${className ?? ""}`}><p className="text-[10px] uppercase tracking-[0.2em] text-primary/60">{label}</p><p className={`mt-1 font-serif ${highlight ? "text-xl font-bold text-primary" : "text-base text-primary/90"}`}>{value}</p></div>;
 }
 
 export default BreakthroughModal;

@@ -65,11 +65,11 @@ const TABS: { id: Tab; label: string }[] = [
 
 function spiritRootBadgeClass(element: SpiritRoot["element"]) {
   return {
-    kim: "border-slate-200/70 bg-slate-100/10 text-slate-100 shadow-[0_0_12px_rgba(226,232,240,0.18)]",
-    moc: "border-emerald-500/60 bg-emerald-500/10 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.18)]",
-    thuy: "border-cyan-500/70 bg-cyan-500/15 text-cyan-300 shadow-[0_0_16px_rgba(6,182,212,0.3)]",
-    hoa: "border-red-500/60 bg-red-500/10 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.18)]",
-    tho: "border-amber-600/60 bg-amber-500/10 text-amber-300 shadow-[0_0_12px_rgba(180,83,9,0.2)]",
+    kim: "border-2 border-slate-200/80 bg-slate-100/10 text-slate-100 shadow-[0_0_12px_rgba(226,232,240,0.22)]",
+    moc: "border-2 border-emerald-500/75 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.22)]",
+    thuy: "border-2 border-cyan-500 bg-cyan-950/40 text-cyan-300 shadow-[0_0_16px_rgba(6,182,212,0.36)]",
+    hoa: "border-2 border-red-500/75 bg-red-950/40 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.24)]",
+    tho: "border-2 border-amber-500/80 bg-amber-950/40 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.24)]",
   }[element];
 }
 
@@ -546,7 +546,7 @@ function Game() {
             <p className="mt-3 font-serif text-lg leading-relaxed">
               Chúc mừng Đạo hữu <span className="font-semibold text-primary">{state.name}</span>!
               Thiên địa cảm ứng, khai mở ra{" "}
-              <span className="font-semibold text-primary">{rootTitle(resultRoot)}</span>!
+              <span className={cn("inline-flex rounded-md px-2 py-1 font-semibold", spiritRootBadgeClass(resultRoot.element))}>{rootTitle(resultRoot)}</span>!
             </p>
             <button
               onClick={() => setResultRoot(null)}
