@@ -32,6 +32,48 @@ export interface ModalEventData {
   option2: AdventureOption;
 }
 
+export interface QuizEventData {
+  id: string;
+  title: string;
+  question: string;
+  answers: string[];
+  correctIndex: number;
+  baseStones: number;
+  baseQiPct: number;
+  realmName: string;
+}
+
+const QUIZ_QUESTIONS = [
+  { question: "Trong Ngũ Hành, yếu tố nào thường khắc chế Hỏa?", answers: ["Thủy", "Mộc", "Kim", "Thổ"], correctIndex: 0 },
+  { question: "Tu sĩ muốn đột phá bình cảnh cần làm gì trước tiên?", answers: ["Ổn định tâm cảnh", "Đốt pháp bảo", "Rời khỏi động phủ", "Ngủ một giấc"], correctIndex: 0 },
+  { question: "Linh thạch thượng phẩm thường dùng để làm gì?", answers: ["Bổ sung linh lực", "Nấu ăn", "Đo trọng lượng", "Trang trí phàm tục"], correctIndex: 0 },
+  { question: "Đan dược hỗ trợ đột phá cần chú trọng điều gì nhất?", answers: ["Dược tính và căn cơ", "Màu sắc", "Mùi hương", "Kích thước bình"], correctIndex: 0 },
+  { question: "Tâm ma thường xuất hiện khi nào?", answers: ["Tâm cảnh dao động", "Trời quang", "Đang ngủ say", "Đã bán hết linh thạch"], correctIndex: 0 },
+  { question: "Pháp bảo nhận chủ bằng cách nào?", answers: ["Luyện hóa bằng thần thức", "Chôn xuống đất", "Đổi tên", "Đặt cạnh linh thảo"], correctIndex: 0 },
+  { question: "Bí cảnh thường nguy hiểm vì nguyên nhân nào?", answers: ["Cấm chế và cơ duyên chưa biết", "Có quá nhiều hoa", "Không có lối vào", "Luôn có tuyết"], correctIndex: 0 },
+  { question: "Cao nhân truyền công thường kiểm tra điều gì?", answers: ["Đạo tâm", "Màu áo", "Tuổi phàm", "Số túi trữ vật"], correctIndex: 0 },
+] as const;
+
+export function createQuizEvent(stage: number, realmName: string): QuizEventData {
+  const question = QUIZ_QUESTIONS[Math.floor(Math.random() * QUIZ_QUESTIONS.length)]!;
+  const answers = [...question.answers];
+  const correct = answers[question.correctIndex]!;
+  for (let i = answers.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [answers[i], answers[j]] = [answers[j]!, answers[i]!];
+  }
+  return {
+    id: `quiz-${Date.now()}`,
+    title: "Khảo Tâm Ma · Thử Thách Tâm Cảnh",
+    question: question.question,
+    answers,
+    correctIndex: answers.indexOf(correct),
+    baseStones: 30 + stage * 18,
+    baseQiPct: Math.min(0.35, 0.08 + stage * 0.015),
+    realmName,
+  };
+}
+
 const HERB_LABEL: Record<string, string> = {
   linhthao: "Linh Thảo",
   huyetchi: "Huyết Chi Thảo",
@@ -375,7 +417,7 @@ const BASE_EVENTS: ModalEventData[] = [
     id: "son_block_duong",
     title: "Cự Thạch Chặn Đường",
     description:
-      "Một tảng cự thạch ngàn tấn lăn xuống chặn ngang lối mòn. Quanh đi quẩn lại không có đường vòng, ngươi phải quyết định nhanh.",
+      "Một tảng cự thạch ngàn tấn lăn xuống chặn ngang lối mòn. Quanh đi quẩn lại không có đường vòng, ngươi ph��i quyết định nhanh.",
     option1: {
       text: "Dùng Thổ Linh Căn làm cự thạch nhường đường",
       winRate: 0.8,
@@ -719,7 +761,7 @@ const BASE_EVENTS: ModalEventData[] = [
     option2: {
       text: "Đào lấy vài khối long linh thạch",
       winRate: 0.7,
-      successText: "Long linh thạch trân quý, đủ đổi một món pháp khí nhỏ.",
+      successText: "Long linh thạch trân quý, đủ đổi một m��n pháp khí nhỏ.",
       failText: "Long mạch thu hồi, đất khép lại nuốt mất dụng cụ của ngươi.",
       rewards: { stones: 140 },
       penalties: { stones: -35 },

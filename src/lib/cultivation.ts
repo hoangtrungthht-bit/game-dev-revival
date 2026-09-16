@@ -225,7 +225,7 @@ export interface GameState {
   brewing: { pill: PillId; endsAt: number } | null;
   buffUntil: number;
   exploringUntil: number;
-  pendingAdventure: import("@/utils/adventureLogic").ModalEventData | null;
+  pendingAdventure: import("@/utils/adventureLogic").QuizEventData | null;
   failures: number;
   breakthroughs: number;
   log: LogEntry[];
@@ -984,7 +984,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     stones: -13,
   },
   {
-    text: "Ma thú khổng lồ rời hang, để lộ luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
+    text: "Ma thú khổng lồ rời hang, để l��� luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
     kind: "good",
     herb: "linhthao",
     herbQty: 3,

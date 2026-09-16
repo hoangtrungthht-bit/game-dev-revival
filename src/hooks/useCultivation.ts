@@ -20,7 +20,7 @@ import {
   rollEncounter,
   stageIndex,
 } from "@/lib/cultivation";
-import { rollModalEvent, type ModalEventData, type AdventureReward } from "@/utils/adventureLogic";
+import { createQuizEvent, type AdventureReward } from "@/utils/adventureLogic";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
 export interface GameNotice {
@@ -235,7 +235,7 @@ export function useCultivation() {
           log: pushLog(s.log, "Thần thức ngưng tụ, tốc độ hấp thu linh khí tăng vọt.", "good"),
         };
       }
-      return s; // Phá Cảnh & Hộ Tâm tự động dùng khi đột phá
+      return s; // Phá Cảnh & Hộ Tâm tự động dùng khi đ��t phá
     });
   }, []);
 
@@ -275,12 +275,12 @@ export function useCultivation() {
       if (Date.now() < s.exploringUntil) return s;
       // 5% kích hoạt Kỳ Ngộ modal
       if (Math.random() < 0.05) {
-        const event = rollModalEvent(Math.random);
+        const event = createQuizEvent(stageIndex(s), realmTitle(s));
         return {
           ...s,
           pendingAdventure: event,
           exploringUntil: Date.now() + 6000,
-          log: pushLog(s.log, `Kỳ ngộ hiện ra: ${event.title}!`, "epic"),
+          log: pushLog(s.log, `Tâm cảnh mở ra: ${event.title}!`, "epic"),
         };
       }
 
@@ -326,34 +326,30 @@ export function useCultivation() {
     });
   }, [announce]);
 
-  const resolveAdventure = useCallback((optionIndex: 1 | 2) => {
+  const resolveAdventure = useCallback((answerIndex: number, wager: boolean) => {
     setState((s) => {
-      if (!s.pendingAdventure) return s;
       const event = s.pendingAdventure;
-      const option = optionIndex === 1 ? event.option1 : event.option2;
-      const stage = stageIndex(s);
-      const meetsReq = option.reqElement ? s.root?.element === option.reqElement : true;
-      const win = meetsReq && Math.random() < option.winRate;
-      const reward = applyAdventureRewards(s, win ? option.rewards : option.penalties, stage);
-
-      // Chuỗi text đã chứa sẵn tag [+/- ...] trong file data; chỉ nối thêm tên pháp bảo ngẫu nhiên.
-      let text = win ? option.successText : option.failText;
-      if (reward.artifactText) text += reward.artifactText;
-
-      announce(
-        `${event.title}: ${text}`,
-        win ? "gain" : "loss",
-        win ? "resource" : undefined,
-      );
-
+      if (!event) return s;
+      const correct = answerIndex === event.correctIndex;
+      const wagerAmount = wager ? Math.floor(s.stones * 0.3) : 0;
+      const baseStones = event.baseStones;
+      const rewardStones = correct && wager ? baseStones + wagerAmount * 2 : correct ? baseStones : 0;
+      const rewardQi = correct ? qiNeeded(s) * event.baseQiPct : 0;
+      const nextStones = correct ? s.stones + rewardStones : wager ? Math.max(0, s.stones - wagerAmount) : s.stones;
+      const text = correct
+        ? wager
+          ? `${event.title}: Chính xác! Tâm cảnh vững như bàn thạch, ngươi thắng lớn! [+ ${rewardStones} Linh Thạch] [+ ${Math.round(event.baseQiPct * 100)}% tu vi]`
+          : `${event.title}: Chính xác! Ngươi giữ vững đạo tâm và nhận được phần thưởng. [+ ${rewardStones} Linh Thạch] [+ ${Math.round(event.baseQiPct * 100)}% tu vi]`
+        : wager
+          ? `${event.title}: Sai rồi! Tâm ma quấy phá, cược thất bại. [- ${wagerAmount} Linh Thạch]`
+          : `${event.title}: Sai rồi! Tâm cảnh dao động, ngươi không nhận được phần thưởng.`;
+      announce(text, correct ? "gain" : "loss", correct ? "resource" : undefined);
       return {
         ...s,
         pendingAdventure: null,
-        herbs: reward.herbs,
-        artifacts: reward.artifacts,
-        stones: reward.stones,
-        qi: reward.qi,
-        log: pushLog(s.log, text, win ? "good" : "bad"),
+        stones: nextStones,
+        qi: s.qi + rewardQi,
+        log: pushLog(s.log, text, correct ? "good" : "bad"),
       };
     });
   }, [announce]);
