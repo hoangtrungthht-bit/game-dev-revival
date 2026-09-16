@@ -370,7 +370,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       successText: "Linh hoa hái được đầy tay, thơm ngát cả túi trữ vật.",
       failText: "Dẫm phải bùn lầy, ngươi vừa mất công vừa mất dược liệu.",
       rewards: { herbId: "linhthao", herbQty: 2 },
-      penalties: { herbId: "linhthao", herbQty: 1, stones: -10 },
+      penalties: { qiPct: -0.05, stones: -10 },
     },
   },
   {
