@@ -221,7 +221,21 @@
   animation: event-toast-in 260ms ease-out both, realm-aura 1.15s ease-in-out infinite;
 }
 
+.breakthrough-modal {
+  animation: realm-aura 1.35s ease-in-out infinite;
+}
+
+.breakthrough-runes {
+  color: oklch(0.82 0.13 85 / 0.38);
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  line-height: 2.1;
+  text-align: center;
+  text-shadow: 0 0 12px oklch(0.82 0.13 85 / 0.75);
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .breakthrough-modal,
   .event-toast,
   .event-toast-major,
   .root-aura {

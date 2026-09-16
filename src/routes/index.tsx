@@ -28,6 +28,7 @@ import { useCultivation } from "@/hooks/useCultivation";
 import { useGameAudio } from "@/hooks/useGameAudio";
 import { cn } from "@/lib/utils";
 import { AdventureModal } from "@/components/AdventureModal";
+import { BreakthroughModal } from "@/components/BreakthroughModal";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -483,7 +484,16 @@ function Game() {
         </button>
       )}
 
-      {flash && <EventToast key={flash.id} notice={flash} />}
+      {flash?.breakthrough ? (
+        <BreakthroughModal
+          key={flash.id}
+          notice={flash}
+          root={state.root}
+          onClose={() => actions.dismissNotice()}
+        />
+      ) : flash ? (
+        <EventToast key={flash.id} notice={flash} />
+      ) : null}
 
       {loaded && state.pendingAdventure && (
 <AdventureModal
