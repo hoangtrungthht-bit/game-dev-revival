@@ -37,6 +37,19 @@ function pushLog(log: LogEntry[], text: string, kind: LogEntry["kind"]): LogEntr
   return [{ id: ++logId, text, kind, time: Date.now() }, ...log].slice(0, 120);
 }
 
+function formatAdventureOutcome(text: string, reward: AdventureReward): string {
+  let formatted = text;
+  if (reward.qiPct && !formatted.includes("tu vi]")) {
+    const sign = reward.qiPct > 0 ? "+" : "-";
+    formatted += ` [${sign} ${Math.abs(reward.qiPct) * 100}% tu vi]`;
+  }
+  if (reward.stones && !formatted.includes("Linh Thạch]")) {
+    const sign = reward.stones > 0 ? "+" : "-";
+    formatted += ` [${sign} ${Math.abs(reward.stones)} Linh Thạch]`;
+  }
+  return formatted;
+}
+
 export function useCultivation() {
   const [state, setState] = useState<GameState>(() => newGame());
   const [loaded, setLoaded] = useState(false);
@@ -346,6 +359,7 @@ export function useCultivation() {
       let text = win ? option.successText : option.failText;
       if (win && option.rewards.herbQty && herbName) text += ` (+${option.rewards.herbQty} ${herbName})`;
       if (reward.artifactText) text += reward.artifactText;
+      text = formatAdventureOutcome(text, win ? option.rewards : option.penalties);
 
       announce(
         `${event.title}: ${text}`,

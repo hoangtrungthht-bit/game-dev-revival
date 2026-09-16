@@ -202,7 +202,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.75,
       reqElement: "thuy",
       successText: "Cấm chế như nước chảy qua kẽ tay, ngươi tiến vào.",
-      failText: "Cấm chế quá phức tạp, ngươi bị đẩy ra.",
+      failText: "Cấm chế quá ph��c tạp, ngươi bị đẩy ra.",
       rewards: { artifact: true, stones: 80 },
       penalties: { qiPct: -0.08 },
     },
@@ -211,6 +211,8 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.2,
       successText: "Phá cấm thành công, nhưng động phủ sắp sụp đổ.",
       failText: "Cấm chế phản lực, ngươi bị trọng thương.",
+      rewards: {},
+      penalties: {},
     },
   },
   // ==========================================
@@ -545,7 +547,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       text: "Đào mộ lấy tài nguyên ngay lập tức",
       winRate: 0.35,
       successText: "Mộ chứa nhiều linh thạch tùy táng, ngươi thu lợi lớn!",
-      failText: "Uy áp của mộ chủ trấn xuống, ngươi bỏ chạy trắng tay.",
+      failText: "Uy áp c��a mộ chủ trấn xuống, ngươi bỏ chạy trắng tay.",
       rewards: { stones: 160 },
       penalties: { qiPct: -0.15, stones: -30 },
     },
@@ -748,7 +750,126 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       penalties: { qiPct: -0.06 },
     },
   },
+  ...createExpandedAdventureEvents(),
 ];
+
+function createExpandedAdventureEvents(): ModalEventData[] {
+  const templates: Array<{
+    id: string;
+    title: string;
+    description: string;
+    reqElement?: ElementId;
+    good: string;
+    bad: string;
+    goodReward: AdventureReward;
+    badPenalty: AdventurePenalty;
+    firstText: string;
+    secondText: string;
+    secondWin: number;
+    secondReward: AdventureReward;
+    secondPenalty: AdventurePenalty;
+  }> = [
+    {
+      id: "cao_nhan_truyen_thu_cong_phap",
+      title: "Cao Nhân Truyền Thụ Công Pháp",
+      description: "Một cao nhân ẩn thế xuất hiện bên suối, nguyện truyền công pháp nếu ngươi vượt qua thử thách tâm cảnh.",
+      good: "Cao nhân gật đầu, công pháp tinh diệu lưu chuyển trong thức hải.",
+      bad: "Tâm cảnh dao động, chân khí phản phệ khiến kinh mạch đau nhức.",
+      goodReward: { qiPct: 0.25 }, badPenalty: { qiPct: -0.1 },
+      firstText: "Giữ tâm bất động tiếp nhận truyền thừa", secondText: "Dùng linh thạch xin cao nhân chỉ điểm",
+      secondWin: 0.55, secondReward: { qiPct: 0.12, stones: -80 }, secondPenalty: { qiPct: -0.05, stones: -40 },
+    },
+    {
+      id: "nhan_phap_bao_hiếm", title: "Nhận Pháp Bảo Hiếm",
+      description: "Một pháp bảo hiếm bị phong ấn trong khe núi, linh quang chớp tắt như đang tìm chủ nhân.",
+      good: "Pháp bảo nhận chủ, linh lực hộ thể tăng lên.", bad: "Phong ấn bật ngược, ngươi bị pháp lực đánh lui.",
+      goodReward: { artifact: true, stones: 80 }, badPenalty: { qiPct: -0.12, stones: -20 },
+      firstText: "Dùng thần thức thử nhận chủ", secondText: "Phá phong ấn bằng linh thạch",
+      secondWin: 0.45, secondReward: { artifact: true }, secondPenalty: { qiPct: -0.18, stones: -60 },
+    },
+    {
+      id: "ky_ngo_ma_thu", title: "Kỳ Ngộ Ma Thú",
+      description: "Một ma thú cổ đại bị thương nằm bên đường, đôi mắt đỏ rực nhưng chưa mất lý trí.",
+      good: "Ma thú trao cho ngươi một giọt tinh huyết, khí tức bỗng tăng mạnh.", bad: "Ma tính bùng nổ, ngươi phải chật vật tránh móng vuốt.",
+      goodReward: { qiPct: 0.2, stones: 60 }, badPenalty: { qiPct: -0.15, stones: -30 },
+      firstText: "Dùng dược liệu chữa trị cho ma thú", secondText: "Thu phục ma thú bằng uy áp",
+      secondWin: 0.35, secondReward: { artifact: true, qiPct: 0.1 }, secondPenalty: { qiPct: -0.22, stones: -45 },
+    },
+    {
+      id: "cho_den_bi_mat", title: "Chợ Đen Bí Mật",
+      description: "Sau bức tường đổ, một chợ đen bí mật mở cửa. Hàng hóa rẻ bất thường và người bán che kín mặt.",
+      good: "Ngươi mua được món hàng thật, giao dịch đem lại lợi ích lớn.", bad: "Hàng giả phát nổ, linh thạch mất sạch một phần.",
+      goodReward: { stones: 140 }, badPenalty: { stones: -100, qiPct: -0.05 },
+      firstText: "Mua hộp hàng niêm phong", secondText: "Bán linh dược cho chủ chợ",
+      secondWin: 0.7, secondReward: { stones: 90 }, secondPenalty: { stones: -35 },
+    },
+    {
+      id: "bi_quyet_co_dai", title: "Bí Quyết Cổ",
+      description: "Trên vách đá có khắc một bí quyết cổ, từng nét chữ tỏa ra uy áp của một thời đại đã mất.",
+      good: "Ngươi lĩnh ngộ được tinh túy, tu vi tăng trưởng rõ rệt.", bad: "Ý cảnh cổ xưa quá mạnh, thần thức bị chấn thương.",
+      goodReward: { qiPct: 0.3 }, badPenalty: { qiPct: -0.16 },
+      firstText: "Tĩnh tâm lĩnh ngộ toàn bộ văn tự", secondText: "Chép lại bí quyết rồi đổi lấy linh thạch",
+      secondWin: 0.65, secondReward: { stones: 110, qiPct: 0.08 }, secondPenalty: { qiPct: -0.08, stones: -20 },
+    },
+    {
+      id: "tranh_chap_mon_phai", title: "Tranh Chấp Môn Phái",
+      description: "Hai môn phái đang tranh giành một linh tuyền. Cả hai cùng mời ngươi đứng về phía mình.",
+      good: "Ngươi phân xử công bằng, hai bên tặng linh thạch và dược liệu.", bad: "Tranh chấp bùng nổ, dư ba pháp thuật làm ngươi bị thương.",
+      goodReward: { stones: 160, herbId: "linhthao", herbQty: 2 }, badPenalty: { qiPct: -0.14, stones: -40 },
+      firstText: "Đứng ra làm người hòa giải", secondText: "Chọn môn phái mạnh hơn để trợ chiến",
+      secondWin: 0.5, secondReward: { stones: 180, qiPct: 0.05 }, secondPenalty: { qiPct: -0.2, stones: -50 },
+    },
+  ];
+
+  const variants = [
+    ["Linh Tuyền", "Một linh tuyền", "linh khí tinh thuần", "moc" as ElementId],
+    ["Cổ Động", "Một cổ động", "di vật thất truyền", "tho" as ElementId],
+    ["Thiên Hồ", "Một thiên hồ", "hàn khí mênh mang", "thuy" as ElementId],
+    ["Hỏa Vực", "Một hỏa vực", "hỏa linh cuồng bạo", "hoa" as ElementId],
+    ["Kiếm Các", "Một kiếm các", "kiếm ý sắc bén", "kim" as ElementId],
+    ["Mê Cảnh", "Một mê cảnh", "ảo quang kỳ dị", undefined],
+    ["Vân Hải", "Một vân hải", "vân khí dày đặc", undefined],
+    ["Tử Trúc Lâm", "Một tử trúc lâm", "mộc khí xanh biếc", "moc" as ElementId],
+    ["Lôi Đài", "Một lôi đài", "lôi quang rền vang", undefined],
+    ["Dược Cốc", "Một dược cốc", "hương thuốc nồng đậm", "moc" as ElementId],
+    ["Băng Cung", "Một băng cung", "băng linh lạnh buốt", "thuy" as ElementId],
+    ["Kim Sơn", "Một kim sơn", "kim khí dày đặc", "kim" as ElementId],
+    ["Ma Uyên", "Một ma uyên", "ma khí đen kịt", undefined],
+    ["Tinh Đài", "Một tinh đài", "tinh quang rực rỡ", undefined],
+    ["Hoang Mạc", "Một hoang mạc", "địa khí khô nóng", "tho" as ElementId],
+    ["Vạn Bảo Các", "Một vạn bảo các", "bảo quang lấp lánh", undefined],
+  ] as const;
+
+  return templates.flatMap((template, templateIndex) =>
+    variants.map((variant, variantIndex) => {
+      const [place, article, phenomenon, element] = variant;
+      const reqElement = templateIndex % 2 === 0 ? element ?? template.reqElement : template.reqElement;
+      const id = `${template.id}_${variantIndex + 1}`;
+      return {
+        id,
+        title: `${template.title} — ${place}`,
+        description: `${template.description} ${article} xuất hiện trước mặt, ${phenomenon} bao phủ bốn phía.`,
+        option1: {
+          text: template.firstText,
+          winRate: 0.72,
+          ...(reqElement ? { reqElement } : {}),
+          successText: `${template.good} [+ ${template.goodReward.qiPct ? Math.round(template.goodReward.qiPct * 100) + "% tu vi" : template.goodReward.stones ? template.goodReward.stones + " Linh Thạch" : "pháp bảo hiếm"}]`,
+          failText: `${template.bad} [- ${Math.abs(template.badPenalty.qiPct ?? 0) * 100}% tu vi${template.badPenalty.stones ? `, - ${Math.abs(template.badPenalty.stones)} Linh Thạch` : ""}]`,
+          rewards: template.goodReward,
+          penalties: template.badPenalty,
+        },
+        option2: {
+          text: template.secondText,
+          winRate: template.secondWin,
+          successText: `${template.good} [+ ${template.secondReward.qiPct ? Math.round(template.secondReward.qiPct * 100) + "% tu vi" : template.secondReward.stones ? template.secondReward.stones + " Linh Thạch" : "pháp bảo hiếm"}]`,
+          failText: `${template.bad} [- ${Math.abs(template.secondPenalty.qiPct ?? 0) * 100}% tu vi${template.secondPenalty.stones ? `, - ${Math.abs(template.secondPenalty.stones)} Linh Thạch` : ""}]`,
+          rewards: template.secondReward,
+          penalties: template.secondPenalty,
+        },
+      };
+    }),
+  );
+}
 
 export function rollModalEvent(rng: () => number): ModalEventData {
   return EVENT_TEMPLATES[Math.floor(rng() * EVENT_TEMPLATES.length)]!;
