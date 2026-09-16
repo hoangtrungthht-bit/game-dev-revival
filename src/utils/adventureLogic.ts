@@ -413,8 +413,8 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.7,
       successText: "Giá hắc thị hậu hĩ, túi linh thạch phình to.",
       failText: "Bị ma tu trêu giá, ngươi bị ép bán rẻ rồi bị đuổi ra.",
-      rewards: { stones: 90, herbId: "linhthao", herbQty: -1 },
-      penalties: { stones: 20 },
+      rewards: { stones: 90 },
+      penalties: { stones: -20 },
     },
   },
   {
@@ -516,8 +516,8 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.75,
       successText: "Thú con hồi phục, khẽ cọ đầu vào người ngươi như cảm tạ.",
       failText: "Thú con quá yếu, chỉ giữ được chút sức rồi lặng lẽ ngủ forever.",
-      rewards: { herbId: "huyetchi", herbQty: -1, qiPct: 0.1, stones: 30 },
-      penalties: { herbId: "huyetchi", herbQty: -1 },
+      rewards: { qiPct: 0.12, stones: 30 },
+      penalties: { qiPct: -0.05 },
     },
     option2: {
       text: "Bỏ mặc, tranh thủ lục soát tổ linh thú",
