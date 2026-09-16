@@ -273,9 +273,24 @@ export function useCultivation() {
   const explore = useCallback(() => {
     setState((s) => {
       if (Date.now() < s.exploringUntil) return s;
-      // 5% kích hoạt Kỳ Ngộ modal
-      if (Math.random() < 0.05) {
-        const event = createQuizEvent(stageIndex(s), realmTitle(s));
+  // Phân bổ encounter: 10% Kỳ Duyên (event epic), 20% Khảo Tâm Ma, 70% sự kiện thường.
+  const eventRoll = Math.random();
+  if (eventRoll < 0.1) {
+    const e = rollEncounter(stageIndex(s), Math.random);
+    const epic = e.kind === "epic" ? e : rollEncounter(stageIndex(s), () => 0);
+    const herbs = { ...s.herbs };
+    if (epic.herb && epic.herbQty) herbs[epic.herb] += epic.herbQty;
+    return {
+      ...s,
+      herbs,
+      stones: Math.max(0, s.stones + (epic.stones ?? 0)),
+      qi: Math.max(0, s.qi + qiNeeded(s) * (epic.qiPct ?? 0)),
+      exploringUntil: Date.now() + 6000,
+      log: pushLog(s.log, `Kỳ Duyên giáng thế: ${epic.text}`, "epic"),
+    };
+  }
+  if (eventRoll < 0.3) {
+    const event = createQuizEvent(stageIndex(s), realmTitle(s));
         return {
           ...s,
           pendingAdventure: event,

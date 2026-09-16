@@ -85,7 +85,10 @@ function Game() {
   return (
     <div className="min-h-screen bg-background text-foreground ink-bg">
       <div className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-6 sm:pb-20 sm:pt-8">
-        <header className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 border-b border-border/60 pb-4 sm:flex sm:flex-wrap sm:justify-between sm:gap-4 sm:pb-5">
+        <header
+          className="root-aura grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl border border-border/60 bg-card/25 px-3 pb-4 pt-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4 sm:px-4 sm:pb-5 sm:pt-4"
+          style={rootAuraStyle(state.root)}
+        >
           <div className="min-w-0">
             <p className="font-serif text-xs uppercase tracking-[0.4em] text-primary/80">
               Tiên Lộ Vô Tận
@@ -111,7 +114,7 @@ function Game() {
           {/* Bảng nhân vật */}
           <aside
             className={cn(
-              "root-panel min-w-0 rounded-xl border border-border bg-card/60 p-4 backdrop-blur sm:p-5",
+              "root-aura root-panel min-w-0 rounded-xl border bg-card/60 p-4 backdrop-blur sm:p-5",
               state.root && ELEMENT_INFO[state.root.element].dark && GRADE_INFO[state.root.grade].opacity >= 0.5 && "root-panel-dark",
             )}
             style={rootPanelStyle(state.root)}
@@ -192,7 +195,7 @@ function Game() {
           </aside>
 
           {/* Khu vực chính */}
-          <main className="min-w-0 rounded-xl border border-border bg-card/40 backdrop-blur">
+          <main className="root-aura min-w-0 rounded-xl border bg-card/40 backdrop-blur" style={rootAuraStyle(state.root)}>
             <nav
               className="grid grid-cols-3 gap-1.5 border-b border-border/70 p-2 sm:grid-cols-6 sm:gap-1"
               aria-label="Tính năng"
@@ -486,8 +489,9 @@ function Game() {
 <AdventureModal
                   event={state.pendingAdventure}
                   stones={state.stones}
-                  onSelect={(answerIndex, wager) => actions.resolveAdventure(answerIndex, wager)}
-                />
+          onSelect={(answerIndex, wager) => actions.resolveAdventure(answerIndex, wager)}
+          auraStyle={rootAuraStyle(state.root)}
+          />
       )}
 
       {showOnboarding && (
@@ -650,6 +654,22 @@ function OnboardingModal({
   );
 }
 
+function rootAuraStyle(root: SpiritRoot | null): CSSProperties | undefined {
+  if (!root) return undefined;
+  const aura = {
+    ha: { color: "#9CA3AF", width: "1px", glow: "5px" },
+    trung: { color: "#3B82F6", width: "2px", glow: "12px" },
+    thuong: { color: "#A855F7", width: "2.5px", glow: "16px" },
+    cuc: { color: "#EAB308", width: "3px", glow: "22px" },
+  }[root.grade];
+  return {
+    borderColor: aura.color,
+    borderWidth: aura.width,
+    boxShadow: `0 0 ${aura.glow} ${aura.color}99, inset 0 0 10px ${aura.color}22`,
+    ...(root.grade === "cuc" ? { animation: "root-aura-pulse 2.4s ease-in-out infinite" } : {}),
+  };
+}
+
 function rootPanelStyle(root: SpiritRoot | null): CSSProperties | undefined {
   if (!root) return undefined;
   const el = ELEMENT_INFO[root.element];
@@ -657,12 +677,7 @@ function rootPanelStyle(root: SpiritRoot | null): CSSProperties | undefined {
   const alpha = Math.round(grade.opacity * 255)
     .toString(16)
     .padStart(2, "0");
-  return {
-    backgroundColor: `${el.hex}${alpha}`,
-    ...(grade.glow
-      ? { boxShadow: `0 0 24px 4px ${el.hex}, 0 0 6px 1px ${el.hex}`, borderColor: el.hex }
-      : {}),
-  };
+  return { backgroundColor: `${el.hex}${alpha}` };
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
