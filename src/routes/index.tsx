@@ -86,7 +86,7 @@ function Game() {
     <div className="min-h-screen bg-background text-foreground ink-bg">
       <div className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-6 sm:pb-20 sm:pt-8">
         <header
-          className="root-aura grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl border border-border/60 bg-card/25 px-3 pb-4 pt-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4 sm:px-4 sm:pb-5 sm:pt-4"
+          className="root-aura grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl border border-border/60 bg-black px-3 pb-4 pt-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4 sm:px-4 sm:pb-5 sm:pt-4"
           style={rootAuraStyle(state.root)}
         >
           <div className="min-w-0">
@@ -114,7 +114,7 @@ function Game() {
           {/* Bảng nhân vật */}
           <aside
             className={cn(
-              "root-aura root-panel min-w-0 rounded-xl border bg-card/60 p-4 backdrop-blur sm:p-5",
+              "root-aura root-panel min-w-0 rounded-xl border bg-black p-4 backdrop-blur sm:p-5",
               state.root && ELEMENT_INFO[state.root.element].dark && GRADE_INFO[state.root.grade].opacity >= 0.5 && "root-panel-dark",
             )}
             style={{ ...rootPanelStyle(state.root), ...rootAuraStyle(state.root) }}
@@ -195,7 +195,7 @@ function Game() {
           </aside>
 
           {/* Khu vực chính */}
-          <main className="root-aura min-w-0 rounded-xl border bg-card/40 backdrop-blur" style={rootAuraStyle(state.root)}>
+          <main className="root-aura min-w-0 rounded-xl border bg-black backdrop-blur" style={rootAuraStyle(state.root)}>
             <nav
               className="grid grid-cols-3 gap-1.5 border-b border-border/70 p-2 sm:grid-cols-6 sm:gap-1"
               aria-label="Tính năng"
