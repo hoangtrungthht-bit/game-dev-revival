@@ -5,15 +5,16 @@ interface AdventureModalProps {
   event: QuizEventData;
   stones: number;
   onSelect: (answerIndex: number, wager: boolean) => void;
+  auraStyle?: React.CSSProperties;
 }
 
-export const AdventureModal: React.FC<AdventureModalProps> = ({ event, stones, onSelect }) => {
+export const AdventureModal: React.FC<AdventureModalProps> = ({ event, stones, onSelect, auraStyle }) => {
   const [wager, setWager] = useState(false);
   const wagerAmount = Math.floor(stones * 0.3);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm animate-in fade-in">
-      <div className="w-full max-w-xl rounded-2xl border border-primary/50 bg-card p-6 text-card-foreground shadow-2xl shadow-primary/10 sm:p-7" role="dialog" aria-modal="true" aria-labelledby="adventure-title">
+      <div className="root-aura w-full max-w-xl rounded-2xl border bg-card p-6 text-card-foreground shadow-2xl shadow-primary/10 sm:p-7" style={auraStyle} role="dialog" aria-modal="true" aria-labelledby="adventure-title">
         <div className="mb-5 flex items-start justify-between gap-4 border-b border-border pb-4">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-primary/80">Thử thách tâm cảnh</p>

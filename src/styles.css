@@ -195,6 +195,15 @@
   }
 }
 
+@keyframes root-aura-pulse {
+  0%, 100% {
+    box-shadow: 0 0 16px #EAB30899, inset 0 0 10px #EAB30822;
+  }
+  50% {
+    box-shadow: 0 0 30px #EAB308, 0 0 44px #EAB30866, inset 0 0 18px #EAB30844;
+  }
+}
+
 @keyframes realm-aura {
   0%, 100% {
     box-shadow: 0 0 18px oklch(0.82 0.13 85 / 0.35);
@@ -214,7 +223,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .event-toast,
-  .event-toast-major {
-    animation: none;
+  .event-toast-major,
+  .root-aura {
+    animation: none !important;
   }
 }
