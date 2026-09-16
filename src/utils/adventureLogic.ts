@@ -202,7 +202,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.75,
       reqElement: "thuy",
       successText: "Cấm chế như nước chảy qua kẽ tay, ngươi tiến vào.",
-      failText: "Cấm chế quá ph���c tạp, ngươi bị đẩy ra.",
+      failText: "Cấm chế quá ph����c tạp, ngươi bị đẩy ra.",
       rewards: { artifact: true, stones: 80 },
       penalties: { qiPct: -0.08 },
     },
@@ -764,9 +764,8 @@ function addOutcomeTags(event: ModalEventData): ModalEventData {
       const sign = values.stones > 0 ? "+" : "-";
       tags.push(`[${sign} ${Math.abs(values.stones)} Linh Thạch]`);
     }
-    return tags.length && !tags.every((tag) => outcome.includes(tag))
-      ? `${outcome} ${tags.filter((tag) => !outcome.includes(tag)).join(" ")}`
-      : outcome;
+    const missingTags = tags.filter((tag) => !outcome.includes(tag));
+    return missingTags.length ? `${outcome.replace(/[.!。]+$/, "")} ${missingTags.join(" ")}` : outcome;
   };
 
   return {
