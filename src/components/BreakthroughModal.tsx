@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { rootTitle, type SpiritRoot } from "@/lib/cultivation";
 import type { GameNotice } from "@/hooks/useCultivation";
 
@@ -10,12 +10,18 @@ interface BreakthroughModalProps {
 
 export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalProps) {
   const data = notice.breakthrough;
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!data || data.type !== "minor") return;
-    const timer = window.setTimeout(onClose, 5000);
+
+    const timer = window.setTimeout(() => onCloseRef.current(), 5000);
     return () => window.clearTimeout(timer);
-  }, [data, onClose]);
+  }, [data, notice.id]);
 
   if (!data) return null;
 
@@ -23,7 +29,7 @@ export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalPr
     return (
       <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" onClick={onClose} role="presentation">
         <div
-          className="event-toast w-full max-w-md cursor-pointer rounded-xl border border-primary/60 bg-black/95 px-5 py-4 text-center text-primary shadow-2xl shadow-primary/20 backdrop-blur"
+          className="event-toast minor-breakthrough-toast relative w-full max-w-md cursor-pointer overflow-hidden rounded-xl border border-amber-500/80 bg-black/90 px-5 py-4 text-center text-amber-100 shadow-2xl shadow-amber-500/30 backdrop-blur-md"
           role="status"
           aria-live="assertive"
           onClick={(event) => event.stopPropagation()}
@@ -31,7 +37,8 @@ export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalPr
           <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary/75">Đột phá thành công!</p>
           <p className="mt-2 font-serif text-lg">Tiến vào {data.realmTitle}</p>
           <p className="mt-1 text-sm text-primary/80">Linh khí/giây tăng nhẹ · +{data.qiRateGain.toFixed(1)}</p>
-          <p className="mt-3 text-[11px] text-muted-foreground">Tự động ẩn sau 5 giây · Chạm ra ngoài để đóng</p>
+          <p className="mt-3 text-[11px] text-amber-200/65">Tự động ẩn sau 5 giây · Chạm ra ngoài để đóng</p>
+          <span className="minor-breakthrough-progress" aria-hidden="true" />
         </div>
       </div>
     );
