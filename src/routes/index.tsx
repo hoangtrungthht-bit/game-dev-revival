@@ -28,9 +28,6 @@ import { useCultivation } from "@/hooks/useCultivation";
 import { useGameAudio } from "@/hooks/useGameAudio";
 import { cn } from "@/lib/utils";
 import { AdventureModal } from "@/components/AdventureModal";
-import { BreakthroughModal } from "@/components/events/BreakthroughModal";
-import { EventResultModal } from "@/components/events/EventResultModal";
-import { ToastNotification } from "@/components/events/ToastNotification";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -66,7 +63,7 @@ const TABS: { id: Tab; label: string }[] = [
 ];
 
 function Game() {
-  const { state, now, loaded, flash, breakthroughResult, eventResult, actions } = useCultivation();
+  const { state, now, loaded, flash, actions } = useCultivation();
   const audio = useGameAudio();
   const [tab, setTab] = useState<Tab>("tuluyen");
   const [resultRoot, setResultRoot] = useState<SpiritRoot | null>(null);
@@ -84,14 +81,6 @@ function Game() {
   useEffect(() => {
     if (flash?.sound) audio.playSfx(flash.sound);
   }, [flash?.id, flash?.sound, audio.playSfx]);
-
-  useEffect(() => {
-    if (breakthroughResult) audio.playSfx("breakthrough");
-  }, [breakthroughResult?.id, audio.playSfx]);
-
-  useEffect(() => {
-    if (eventResult?.success) audio.playSfx("resource");
-  }, [eventResult?.id, eventResult?.success, audio.playSfx]);
 
   return (
     <div className="min-h-screen bg-background text-foreground ink-bg">
@@ -491,9 +480,7 @@ function Game() {
         </button>
       )}
 
-      {flash && !breakthroughResult && !eventResult && (
-        <ToastNotification key={flash.id} notice={flash} />
-      )}
+      {flash && <EventToast key={flash.id} notice={flash} />}
 
       {loaded && state.pendingAdventure && (
         <AdventureModal
@@ -501,14 +488,6 @@ function Game() {
           root={state.root}
           onSelect={(idx) => actions.resolveAdventure(idx)}
         />
-      )}
-
-      {loaded && eventResult && !state.pendingAdventure && (
-        <EventResultModal result={eventResult} onClose={actions.clearEventResult} />
-      )}
-
-      {loaded && breakthroughResult && (
-        <BreakthroughModal result={breakthroughResult} onClaim={actions.clearBreakthroughResult} />
       )}
 
       {showOnboarding && (
@@ -549,6 +528,37 @@ function Game() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function EventToast({ notice }: { notice: NonNullable<ReturnType<typeof useCultivation>["flash"]> }) {
+  const [visible, setVisible] = useState(true);
+  const duration = notice.kind === "major" ? 3500 : 2000;
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(false), duration);
+    return () => clearTimeout(timer);
+  }, [duration]);
+
+  if (!visible) return null;
+
+  return (
+    <div className="pointer-events-none fixed inset-x-3 top-16 z-[60] flex justify-center sm:top-6" aria-live="polite">
+      <div
+        className={cn(
+          "event-toast w-full max-w-md rounded-lg border bg-card/95 px-4 py-3 text-center shadow-2xl backdrop-blur",
+          notice.kind === "major" && "event-toast-major max-w-lg border-primary px-6 py-5 text-primary",
+          notice.kind === "minor" && "border-jade/60 text-jade",
+          notice.kind === "alchemy" && "border-jade bg-jade/15 text-jade",
+          notice.kind === "gain" && "border-primary/70 bg-primary/15 text-primary",
+          notice.kind === "loss" && "border-destructive/70 bg-destructive/15 text-destructive",
+        )}
+      >
+        <p className={cn("font-serif text-sm leading-relaxed", notice.kind === "major" && "text-lg font-semibold")}>
+          {notice.text}
+        </p>
+      </div>
     </div>
   );
 }

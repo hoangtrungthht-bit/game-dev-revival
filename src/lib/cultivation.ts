@@ -275,6 +275,7 @@ export function breakthroughChance(s: GameState): number {
   return Math.max(0.15, Math.min(0.97, c));
 }
 
+
 export interface Encounter {
   text: string;
   kind: LogEntry["kind"];
