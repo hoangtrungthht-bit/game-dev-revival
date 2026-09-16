@@ -202,7 +202,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.75,
       reqElement: "thuy",
       successText: "Cấm chế như nước chảy qua kẽ tay, ngươi tiến vào.",
-      failText: "Cấm chế quá ph��c tạp, ngươi bị đẩy ra.",
+      failText: "Cấm chế quá ph���c tạp, ngươi bị đẩy ra.",
       rewards: { artifact: true, stones: 80 },
       penalties: { qiPct: -0.08 },
     },
@@ -710,7 +710,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
     id: "cuu_tinh_lien_tru",
     title: "Lôi Kiếp Dư Ba",
     description:
-      "Nơi đây vừa xảy ra một cơn thiên kiếp, đất nứt đá toé, tàn dư lôi điện vẫn chập chờn trên không. Linh thạch kiếp hậu nằm rải rác.",
+      "Nơi đây vừa xảy ra một cơn thiên kiếp, đất nứt đá toé, tàn dư lôi điện vẫn chập chờn trên không. Linh th��ch kiếp hậu nằm rải rác.",
     option1: {
       text: "Lao vào nhặt linh thạch kiếp hậu",
       winRate: 0.45,
@@ -751,7 +751,38 @@ const EVENT_TEMPLATES: ModalEventData[] = [
     },
   },
   ...createExpandedAdventureEvents(),
-];
+].map(addOutcomeTags);
+
+function addOutcomeTags(event: ModalEventData): ModalEventData {
+  const formatTags = (outcome: string, values: AdventureReward | AdventurePenalty) => {
+    const tags: string[] = [];
+    if (values.qiPct) {
+      const sign = values.qiPct > 0 ? "+" : "-";
+      tags.push(`[${sign} ${Math.abs(values.qiPct) * 100}% tu vi]`);
+    }
+    if (values.stones) {
+      const sign = values.stones > 0 ? "+" : "-";
+      tags.push(`[${sign} ${Math.abs(values.stones)} Linh Thạch]`);
+    }
+    return tags.length && !tags.every((tag) => outcome.includes(tag))
+      ? `${outcome} ${tags.filter((tag) => !outcome.includes(tag)).join(" ")}`
+      : outcome;
+  };
+
+  return {
+    ...event,
+    option1: {
+      ...event.option1,
+      successText: formatTags(event.option1.successText, event.option1.rewards),
+      failText: formatTags(event.option1.failText, event.option1.penalties),
+    },
+    option2: {
+      ...event.option2,
+      successText: formatTags(event.option2.successText, event.option2.rewards),
+      failText: formatTags(event.option2.failText, event.option2.penalties),
+    },
+  };
+}
 
 function createExpandedAdventureEvents(): ModalEventData[] {
   const templates: Array<{

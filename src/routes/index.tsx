@@ -678,7 +678,7 @@ function LogRow({ text, kind }: { text: string; kind: "info" | "good" | "bad" | 
   return (
     <p
       className={cn(
-        "rounded-md border-l-2 bg-background/40 px-3 py-2 text-sm",
+        "rounded-md border-l-2 bg-background/40 px-3 py-2 text-sm whitespace-pre-wrap break-words",
         kind === "epic" && "border-primary text-primary",
         kind === "good" && "border-jade text-foreground",
         kind === "bad" && "border-destructive text-destructive",
