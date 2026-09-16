@@ -483,11 +483,11 @@ function Game() {
       {flash && <EventToast key={flash.id} notice={flash} />}
 
       {loaded && state.pendingAdventure && (
-        <AdventureModal
-          event={state.pendingAdventure}
-          root={state.root}
-          onSelect={(idx) => actions.resolveAdventure(idx)}
-        />
+<AdventureModal
+                  event={state.pendingAdventure}
+                  stones={state.stones}
+                  onSelect={(answerIndex, wager) => actions.resolveAdventure(answerIndex, wager)}
+                />
       )}
 
       {showOnboarding && (
