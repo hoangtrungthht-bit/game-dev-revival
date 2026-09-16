@@ -657,27 +657,24 @@ function OnboardingModal({
 function rootAuraStyle(root: SpiritRoot | null): CSSProperties | undefined {
   if (!root) return undefined;
   const aura = {
-    ha: { color: "#9CA3AF", width: "1px", glow: "5px" },
-    trung: { color: "#3B82F6", width: "2px", glow: "12px" },
-    thuong: { color: "#A855F7", width: "2.5px", glow: "16px" },
-    cuc: { color: "#EAB308", width: "3px", glow: "22px" },
+    ha: { width: "1px", glow: "5px" },
+    trung: { width: "2px", glow: "12px" },
+    thuong: { width: "2.5px", glow: "16px" },
+    cuc: { width: "3px", glow: "22px" },
   }[root.grade];
+  const color = ELEMENT_INFO[root.element].hex;
   return {
-    borderColor: aura.color,
+    borderColor: color,
     borderWidth: aura.width,
-    boxShadow: `0 0 ${aura.glow} ${aura.color}99, inset 0 0 10px ${aura.color}22`,
+    boxShadow: `0 0 ${aura.glow} ${color}99, inset 0 0 10px ${color}22`,
+    "--root-aura-color": color,
     ...(root.grade === "cuc" ? { animation: "root-aura-pulse 2.4s ease-in-out infinite" } : {}),
-  };
+  } as CSSProperties;
 }
 
-function rootPanelStyle(root: SpiritRoot | null): CSSProperties | undefined {
-  if (!root) return undefined;
-  const el = ELEMENT_INFO[root.element];
-  const grade = GRADE_INFO[root.grade];
-  const alpha = Math.round(grade.opacity * 255)
-    .toString(16)
-    .padStart(2, "0");
-  return { backgroundColor: `${el.hex}${alpha}` };
+function rootPanelStyle(_root: SpiritRoot | null): CSSProperties | undefined {
+  if (!_root) return undefined;
+  return { backgroundColor: "#000000" };
 }
 
 function Stat({ label, value }: { label: string; value: string }) {
