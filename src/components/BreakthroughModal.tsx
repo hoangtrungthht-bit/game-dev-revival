@@ -9,6 +9,21 @@ interface BreakthroughModalProps {
 }
 
 function spiritRootClass(root: SpiritRoot) {
+  const normalizedElement = String(root.element)
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\\u0300-\\u036f]/g, "");
+  const element = normalizedElement === "water" || normalizedElement === "thuy" ? "thuy" : normalizedElement;
+
+  if (element === "thuy") {
+    return [
+      "border-2 border-cyan-400 bg-cyan-950/80 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.5)]",
+      root.grade === "thuong" && "shadow-[0_0_15px_rgba(6,182,212,0.6)]",
+      root.grade === "cuc" && "shadow-[0_0_20px_rgba(6,182,212,0.72)]",
+    ].filter(Boolean).join(" ");
+  }
+
   const gradeClasses = {
     ha: "border border-opacity-50",
     trung: "border-2 border-opacity-80",
@@ -19,19 +34,11 @@ function spiritRootClass(root: SpiritRoot) {
   const elementClasses = {
     kim: "border-slate-200/80 bg-slate-100/10 text-slate-100 [--root-glow:rgba(226,232,240,0.68)]",
     moc: "border-emerald-500/80 bg-emerald-950/40 text-emerald-300 [--root-glow:rgba(16,185,129,0.68)]",
-    thuy: "border-2 border-cyan-400 bg-cyan-950/80 text-cyan-300 shadow-[0_0_12px_rgba(6,182,212,0.5)] [--root-glow:rgba(6,182,212,0.72)]",
     hoa: "border-red-500/80 bg-red-950/40 text-red-300 [--root-glow:rgba(239,68,68,0.68)]",
     tho: "border-amber-500/80 bg-amber-950/40 text-amber-300 [--root-glow:rgba(245,158,11,0.68)]",
-  }[root.element];
+  }[element as "kim" | "moc" | "hoa" | "tho"];
 
-  const gradeBorder = {
-    ha: { kim: "border-slate-300/50", moc: "border-emerald-800/50", thuy: "border-cyan-800/50", hoa: "border-red-800/50", tho: "border-amber-800/50" },
-    trung: { kim: "border-slate-300/80", moc: "border-emerald-600/80", thuy: "border-cyan-400", hoa: "border-red-600/80", tho: "border-amber-600/80" },
-    thuong: { kim: "border-slate-200", moc: "border-emerald-400", thuy: "border-cyan-400", hoa: "border-red-400", tho: "border-amber-400" },
-    cuc: { kim: "border-slate-100", moc: "border-emerald-300", thuy: "border-cyan-300", hoa: "border-red-300", tho: "border-amber-300" },
-  }[root.grade][root.element];
-
-  return [gradeClasses, elementClasses, gradeBorder].join(" ");
+  return [gradeClasses, elementClasses].join(" ");
 }
 
 export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalProps) {
