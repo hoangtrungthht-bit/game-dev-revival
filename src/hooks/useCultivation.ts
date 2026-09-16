@@ -32,6 +32,20 @@ export interface GameNotice {
 
 let logId = 100;
 
+function rollStoneDelta(current: number, minPct: number, maxPct: number, sign: 1 | -1): { amount: number; pct: number } {
+  const pct = minPct + Math.random() * (maxPct - minPct);
+  const amount = Math.max(5, Math.round(current * pct));
+  return { amount: sign * amount, pct: Math.round(pct * 100) };
+}
+
+function stoneLog(delta: number, pct: number): string {
+  return `[${delta >= 0 ? "+" : "-"} ${Math.abs(delta)} Linh Thạch (${delta >= 0 ? "+" : "-"}${Math.abs(pct)}%)]`;
+}
+
+function replaceStoneLog(text: string, delta: number, pct: number): string {
+  return `${text.replace(/\\[[+-]\\s*\\d+\\s+Linh Thạch(?:\\s*\\([^\\]]+\\))?\\]/g, "").trim()} ${stoneLog(delta, pct)}`;
+}
+
 function pushLog(log: LogEntry[], text: string, kind: LogEntry["kind"]): LogEntry[] {
   return [{ id: ++logId, text, kind, time: Date.now() }, ...log].slice(0, 120);
 }
@@ -280,13 +294,19 @@ export function useCultivation() {
     const epic = e.kind === "epic" ? e : rollEncounter(stageIndex(s), () => 0);
     const herbs = { ...s.herbs };
     if (epic.herb && epic.herbQty) herbs[epic.herb] += epic.herbQty;
+    const epicStone = epic.stones
+      ? rollStoneDelta(s.stones, 0.2, 0.4, epic.stones > 0 ? 1 : -1)
+      : { amount: 0, pct: 0 };
+    const epicText = epicStone.amount
+      ? replaceStoneLog(`Kỳ Duyên giáng thế: ${epic.text}`, epicStone.amount, epicStone.pct)
+      : `Kỳ Duyên giáng thế: ${epic.text}`;
     return {
       ...s,
       herbs,
-      stones: Math.max(0, s.stones + (epic.stones ?? 0)),
+      stones: Math.max(0, s.stones + epicStone.amount),
       qi: Math.max(0, s.qi + qiNeeded(s) * (epic.qiPct ?? 0)),
       exploringUntil: Date.now() + 6000,
-      log: pushLog(s.log, `Kỳ Duyên giáng thế: ${epic.text}`, "epic"),
+      log: pushLog(s.log, epicText, "epic"),
     };
   }
   if (eventRoll < 0.3) {
@@ -317,6 +337,10 @@ export function useCultivation() {
           text += " Tiếc thay bên trong chỉ còn lại bụi trần.";
         }
       }
+      const normalStone = e.stones
+        ? rollStoneDelta(s.stones, 0.03, 0.08, e.stones > 0 ? 1 : -1)
+        : { amount: 0, pct: 0 };
+      text = normalStone.amount ? replaceStoneLog(text, normalStone.amount, normalStone.pct) : text;
       const isLargeCultivationChange = Math.abs(e.qiPct ?? 0) >= 0.15;
       if (isLargeCultivationChange) {
         announce(
@@ -346,17 +370,19 @@ export function useCultivation() {
       const event = s.pendingAdventure;
       if (!event) return s;
       const correct = answerIndex === event.correctIndex;
-      const wagerAmount = wager ? Math.floor(s.stones * 0.3) : 0;
-      const baseStones = event.baseStones;
-      const rewardStones = correct && wager ? baseStones + wagerAmount * 2 : correct ? baseStones : 0;
+      const quizStone = correct
+        ? rollStoneDelta(s.stones, wager ? 0.3 : 0.15, wager ? 0.3 : 0.15, 1)
+        : wager
+          ? { amount: -Math.max(5, Math.round(s.stones * 0.15)), pct: 15 }
+          : { amount: 0, pct: 0 };
       const rewardQi = correct ? qiNeeded(s) * event.baseQiPct : 0;
-      const nextStones = correct ? s.stones + rewardStones : wager ? Math.max(0, s.stones - wagerAmount) : s.stones;
+      const nextStones = Math.max(0, s.stones + quizStone.amount);
       const text = correct
         ? wager
-          ? `${event.title}: Chính xác! Tâm cảnh vững như bàn thạch, ngươi thắng lớn! [+ ${rewardStones} Linh Thạch] [+ ${Math.round(event.baseQiPct * 100)}% tu vi]`
-          : `${event.title}: Chính xác! Ngươi giữ vững đạo tâm và nhận được phần thưởng. [+ ${rewardStones} Linh Thạch] [+ ${Math.round(event.baseQiPct * 100)}% tu vi]`
+          ? `${event.title}: Chính xác! Tâm cảnh vững như bàn thạch, ngươi thắng lớn! ${stoneLog(quizStone.amount, quizStone.pct)} [+ ${Math.round(event.baseQiPct * 100)}% tu vi]`
+          : `${event.title}: Chính xác! Ngươi giữ vững đạo tâm và nhận được phần thưởng. ${stoneLog(quizStone.amount, quizStone.pct)} [+ ${Math.round(event.baseQiPct * 100)}% tu vi]`
         : wager
-          ? `${event.title}: Sai rồi! Tâm ma quấy phá, cược thất bại. [- ${wagerAmount} Linh Thạch]`
+          ? `${event.title}: Sai rồi! Tâm ma quấy phá, cược thất bại. ${stoneLog(quizStone.amount, quizStone.pct)}`
           : `${event.title}: Sai rồi! Tâm cảnh dao động, ngươi không nhận được phần thưởng.`;
       announce(text, correct ? "gain" : "loss", correct ? "resource" : undefined);
       return {
