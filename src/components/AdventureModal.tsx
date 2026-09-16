@@ -5,7 +5,7 @@ interface AdventureModalProps {
   event: QuizEventData;
   stones: number;
   onSelect: (answerIndex: number, wager: boolean) => void;
-  auraStyle?: React.CSSProperties;
+  auraStyle?: React.CSSProperties | undefined;
 }
 
 export const AdventureModal: React.FC<AdventureModalProps> = ({ event, stones, onSelect, auraStyle }) => {

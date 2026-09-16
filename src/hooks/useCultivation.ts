@@ -28,6 +28,9 @@ export interface GameNotice {
   text: string;
   kind: GameNoticeKind;
   sound?: "breakthrough" | "alchemy" | "resource";
+  breakthrough?:
+    | { type: "minor"; realmTitle: string; qiRateGain: number }
+    | { type: "major"; name: string; realmTitle: string; qiRateGain: number; lifespanGain: number };
 }
 
 let logId = 100;
@@ -148,6 +151,8 @@ export function useCultivation() {
     setFlash({ id: ++logId, text, kind, ...(sound ? { sound } : {}) });
   }, []);
 
+  const dismissNotice = useCallback(() => setFlash(null), []);
+
   const meditate = useCallback(() => {
     setState((s) => ({ ...s, qi: s.qi + qiRate(s, Date.now()) * 1.5 + 2 }));
   }, []);
@@ -177,7 +182,27 @@ export function useCultivation() {
         const text = major
           ? `Thiên kiếp giáng lâm! Ngươi cắn răng chịu đủ chín đạo lôi đình, đột phá tới ${title}!`
           : `Kinh mạch thông suốt, ngươi tiến vào ${title}.`;
-        announce(text, major ? "major" : "minor", "breakthrough");
+        const previousRate = qiRate(s, Date.now());
+        const nextState = { ...s, realm, level };
+        setFlash({
+          id: ++logId,
+          text,
+          kind: major ? "major" : "minor",
+          sound: "breakthrough",
+          breakthrough: major
+            ? {
+                type: "major",
+                name: s.name,
+                realmTitle: title,
+                qiRateGain: Math.max(0, qiRate(nextState, Date.now()) - previousRate),
+                lifespanGain: 10 + stageIndex(nextState) * 3,
+              }
+            : {
+                type: "minor",
+                realmTitle: title,
+                qiRateGain: Math.max(0, qiRate(nextState, Date.now()) - previousRate),
+              },
+        });
         return {
           ...s,
           realm,
@@ -453,6 +478,6 @@ export function useCultivation() {
     now,
     loaded,
     flash,
-    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure },
+    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, dismissNotice },
   };
 }
