@@ -43,7 +43,7 @@ function stoneLog(delta: number, pct: number): string {
 }
 
 function replaceStoneLog(text: string, delta: number, pct: number): string {
-  return `${text.replace(/\\[[+-]\\s*\\d+\\s+Linh Thạch(?:\\s*\\([^\\]]+\\))?\\]/g, "").trim()} ${stoneLog(delta, pct)}`;
+  return `${text.replace(/\[[+-]\s*\d+\s+Linh Thạch(?:\s*\([^\]]+\))?\]/g, "").trim()} ${stoneLog(delta, pct)}`;
 }
 
 function pushLog(log: LogEntry[], text: string, kind: LogEntry["kind"]): LogEntry[] {

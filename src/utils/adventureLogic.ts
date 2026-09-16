@@ -181,9 +181,6 @@ function outcomeTag(delta: AdventureReward | AdventurePenalty): string {
   if (delta.qiPct) {
     parts.push(`[${delta.qiPct > 0 ? "+" : "-"} ${Math.abs(Math.round(delta.qiPct * 100))}% tu vi]`);
   }
-  if (delta.stones) {
-    parts.push(`[${delta.stones > 0 ? "+" : "-"} ${Math.abs(delta.stones)} Linh Thạch]`);
-  }
   const herbId = (delta as AdventureReward).herbId;
   const herbQty = (delta as AdventureReward).herbQty;
   if (herbId && herbQty) {
@@ -1033,16 +1030,16 @@ function createExpandedAdventureEvents(): ModalEventData[] {
           text: template.firstText,
           winRate: 0.72,
           ...(reqElement ? { reqElement } : {}),
-          successText: `${template.good} [+ ${template.goodReward.qiPct ? Math.round(template.goodReward.qiPct * 100) + "% tu vi" : template.goodReward.stones ? template.goodReward.stones + " Linh Thạch" : "pháp bảo hiếm"}]`,
-          failText: `${template.bad} [- ${Math.abs(template.badPenalty.qiPct ?? 0) * 100}% tu vi${template.badPenalty.stones ? `, - ${Math.abs(template.badPenalty.stones)} Linh Thạch` : ""}]`,
+          successText: `${template.good}${template.goodReward.qiPct ? ` [+ ${Math.round(template.goodReward.qiPct * 100)}% tu vi]` : ""}`,
+          failText: `${template.bad}${template.badPenalty.qiPct ? ` [- ${Math.abs(template.badPenalty.qiPct) * 100}% tu vi]` : ""}`,
           rewards: template.goodReward,
           penalties: template.badPenalty,
         },
         option2: {
           text: template.secondText,
           winRate: template.secondWin,
-          successText: `${template.good} [+ ${template.secondReward.qiPct ? Math.round(template.secondReward.qiPct * 100) + "% tu vi" : template.secondReward.stones ? template.secondReward.stones + " Linh Thạch" : "pháp bảo hiếm"}]`,
-          failText: `${template.bad} [- ${Math.abs(template.secondPenalty.qiPct ?? 0) * 100}% tu vi${template.secondPenalty.stones ? `, - ${Math.abs(template.secondPenalty.stones)} Linh Thạch` : ""}]`,
+          successText: `${template.good}${template.secondReward.qiPct ? ` [+ ${Math.round(template.secondReward.qiPct * 100)}% tu vi]` : ""}`,
+          failText: `${template.bad}${template.secondPenalty.qiPct ? ` [- ${Math.abs(template.secondPenalty.qiPct) * 100}% tu vi]` : ""}`,
           rewards: template.secondReward,
           penalties: template.secondPenalty,
         },
