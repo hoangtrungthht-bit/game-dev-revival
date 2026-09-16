@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   ARTIFACTS,
   GameState,
-  HERBS,
   HerbId,
   LogEntry,
   MANUALS,
@@ -303,8 +302,6 @@ export function useCultivation() {
           text += " Tiếc thay bên trong chỉ còn lại bụi trần.";
         }
       }
-      const herbName = e.herb ? HERBS.find((h) => h.id === e.herb)!.name : "";
-      if (e.herb && e.herbQty) text += ` (+${e.herbQty} ${herbName})`;
       const isLargeCultivationChange = Math.abs(e.qiPct ?? 0) >= 0.15;
       if (isLargeCultivationChange) {
         announce(
@@ -339,12 +336,8 @@ export function useCultivation() {
       const win = meetsReq && Math.random() < option.winRate;
       const reward = applyAdventureRewards(s, win ? option.rewards : option.penalties, stage);
 
-      const herbName =
-        win && option.rewards.herbId
-          ? HERBS.find((h) => h.id === option.rewards.herbId)!.name
-          : "";
+      // Chuỗi text đã chứa sẵn tag [+/- ...] trong file data; chỉ nối thêm tên pháp bảo ngẫu nhiên.
       let text = win ? option.successText : option.failText;
-      if (win && option.rewards.herbQty && herbName) text += ` (+${option.rewards.herbQty} ${herbName})`;
       if (reward.artifactText) text += reward.artifactText;
 
       announce(
