@@ -286,68 +286,59 @@ export interface Encounter {
   artifact?: boolean;
 }
 
+interface EncounterTemplate {
+  text: (ctx: { herb: Herb; qty: number; gold: number }) => string;
+  kind: LogEntry["kind"];
+  effect: (ctx: { herb: Herb; qty: number; gold: number }) => Omit<Encounter, "text" | "kind">;
+}
+
+const ADVENTURE_STORIES = [
+  "Cao nhân truyền thụ công pháp bên thác bạc",
+  "Bí cảnh cổ mở cửa dưới lòng đất",
+  "Tranh chấp môn phái tại cầu Vân Sơn",
+  "Chợ đen của các tán tu trong thành",
+  "Kỳ ngộ ma thú giữa rừng hoang",
+  "Di tích kiếm tu phủ đầy rêu xanh",
+  "Động phủ đan sư để lại trên đỉnh núi",
+  "Đoàn thương buôn vượt qua sa mạc linh khí",
+  "Hồ linh tuyền xuất hiện sau cơn mưa",
+  "Lôi đài tu sĩ mở hội giữa trấn nhỏ",
+  "Mê cung cổ thú thức tỉnh trong sơn cốc",
+  "Thuyền bay lạc hướng giữa tầng mây",
+  "Vườn linh dược bị phong ấn nghìn năm",
+  "Sứ giả tiên môn tìm kiếm người hữu duyên",
+  "Mảnh vỡ pháp bảo rơi xuống từ thiên ngoại",
+  "Cổ mộ ma đạo phát ra tiếng chuông đêm",
+] as const;
+
+const ADVENTURE_VARIANTS = [
+  { text: (s: string, c: { herb: Herb; qty: number; gold: number }) => `${s}: ngươi được chỉ điểm tâm pháp, linh khí vận chuyển thông suốt. [+ 15% tu vi]`, kind: "good" as const, effect: () => ({ qiPct: 0.15 }) },
+  { text: (s: string, c: { herb: Herb; qty: number; gold: number }) => `${s}: nhặt được túi linh thạch bị bỏ quên. [+ ${c.gold} Linh Thạch]`, kind: "good" as const, effect: (c: { herb: Herb; qty: number; gold: number }) => ({ stones: c.gold }) },
+  { text: (s: string, c: { herb: Herb; qty: number; gold: number }) => `${s}: tìm thấy ${c.herb.name} trong khe đá. [+ ${c.qty} Linh Thảo]`, kind: "good" as const, effect: (c: { herb: Herb; qty: number; gold: number }) => ({ herb: c.herb.id, herbQty: c.qty }) },
+  { text: (s: string) => `${s}: ngộ ra một tia đạo vận, căn cơ được củng cố. [+ 10% tu vi]`, kind: "info" as const, effect: () => ({ qiPct: 0.1 }) },
+  { text: (s: string, c: { herb: Herb; qty: number; gold: number }) => `${s}: mua được linh dược quý từ một quầy bí mật. [- ${Math.min(c.gold, 20)} Linh Thạch]`, kind: "good" as const, effect: (c: { herb: Herb; qty: number; gold: number }) => ({ stones: -Math.min(c.gold, 20), herb: c.herb.id, herbQty: 2 }) },
+  { text: (s: string) => `${s}: ma khí xâm nhập kinh mạch, ngươi bị thương nặng. [- 10% tu vi]`, kind: "bad" as const, effect: () => ({ qiPct: -0.1 }) },
+  { text: (s: string, c: { herb: Herb; qty: number; gold: number }) => `${s}: bị kẻ xấu đánh lén và cướp mất túi tiền. [- ${Math.floor(c.gold / 2)} Linh Thạch]`, kind: "bad" as const, effect: (c: { herb: Herb; qty: number; gold: number }) => ({ stones: -Math.floor(c.gold / 2) }) },
+  { text: (s: string, c: { herb: Herb; qty: number; gold: number }) => `${s}: vượt qua khảo nghiệm, đoạt được bảo vật trấn áp ma khí. [+ ${c.gold * 2} Linh Thạch]`, kind: "epic" as const, effect: (c: { herb: Herb; qty: number; gold: number }) => ({ stones: c.gold * 2, artifact: true }) },
+] as const;
+
+export const ENCOUNTER_TEMPLATES: EncounterTemplate[] = ADVENTURE_STORIES.flatMap((story) =>
+  ADVENTURE_VARIANTS.map((variant) => ({
+    text: (ctx: { herb: Herb; qty: number; gold: number }) => variant.text(story, ctx),
+    kind: variant.kind,
+    effect: variant.effect,
+  })),
+);
+
 export function rollEncounter(stage: number, rng: () => number): Encounter {
   const tierCap = Math.min(4, 1 + Math.floor(stage / 8));
   const herbPool = HERBS.filter((h) => h.tier <= tierCap);
   const herb = herbPool[Math.floor(rng() * herbPool.length)]!;
-  const roll = rng();
+  const qty = 1 + Math.floor(rng() * 3);
   const gold = Math.floor((8 + stage * 6) * (0.6 + rng()));
-
-  if (roll < 0.3)
-    return {
-      text: `Ngươi tìm được một khóm ${herb.name} mọc bên vách núi sương phủ.`,
-      kind: "good",
-      herb: herb.id,
-      herbQty: 1 + Math.floor(rng() * 3),
-    };
-  if (roll < 0.5)
-    return {
-      text: `Đánh bại một con yêu thú lang thang. [+ ${gold} Linh Thạch]`,
-      kind: "good",
-      stones: gold,
-    };
-  if (roll < 0.62)
-    return {
-      text: "Ngươi lạc vào một sơn động cổ, cảm ngộ vết kiếm trên vách đá, linh khí trong người dâng trào. [+ 20% tu vi]",
-      kind: "good",
-      qiPct: 0.2,
-    };
-  if (roll < 0.72) {
-    const spend = Math.min(gold, 20);
-    return {
-      text: `Một tán tu bày quầy giữa rừng, ngươi đổi chút vật phẩm lấy dược liệu quý. [- ${spend} Linh Thạch]`,
-      kind: "good",
-      herb: herb.id,
-      herbQty: 2,
-      stones: -spend,
-    };
-  }
-  if (roll < 0.8)
-    return {
-      text: "Trúng mai phục của ma tu! Ngươi liều mạng chạy thoát nhưng khí tức tổn hao. [- 15% tu vi]",
-      kind: "bad",
-      qiPct: -0.15,
-    };
-  if (roll < 0.88) {
-    const loss = Math.floor(gold / 2);
-    return {
-      text: `Bị đám sơn tặc chặn đường. [- ${loss} Linh Thạch]`,
-      kind: "bad",
-      stones: -loss,
-    };
-  }
-  if (roll < 0.96)
-    return {
-      text: "Ngươi ngồi thiền bên suối linh, một đêm trôi qua như chớp mắt. [+ 10% tu vi]",
-      kind: "info",
-      qiPct: 0.1,
-    };
-  return {
-    text: `Di tích thượng cổ hé mở! Trong quan tài ngọc có một kiện pháp bảo phong ấn. [+ ${gold * 2} Linh Thạch]`,
-    kind: "epic",
-    artifact: true,
-    stones: gold * 2,
-  };
+  const template = ENCOUNTER_TEMPLATES[Math.floor(rng() * ENCOUNTER_TEMPLATES.length)]!;
+  const context = { herb, qty, gold };
+  return { text: template.text(context), kind: template.kind, ...template.effect(context) };
 }
 
 export function fmt(n: number): string {
