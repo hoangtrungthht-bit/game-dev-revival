@@ -63,14 +63,54 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "nhatky", label: "Nhật Ký" },
 ];
 
-function spiritRootBadgeClass(element: SpiritRoot["element"]) {
-  return {
-    kim: "border-2 border-slate-200/80 bg-slate-100/10 text-slate-100 shadow-[0_0_12px_rgba(226,232,240,0.22)]",
-    moc: "border-2 border-emerald-500/75 bg-emerald-950/40 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.22)]",
-    thuy: "border-2 border-cyan-500 bg-cyan-950/40 text-cyan-300 shadow-[0_0_16px_rgba(6,182,212,0.36)]",
-    hoa: "border-2 border-red-500/75 bg-red-950/40 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.24)]",
-    tho: "border-2 border-amber-500/80 bg-amber-950/40 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.24)]",
-  }[element];
+function spiritRootBadgeClass(root: SpiritRoot) {
+  const gradeClasses = {
+    ha: "border border-opacity-50",
+    trung: "border-2 border-opacity-80",
+    thuong: "border-2 shadow-[0_0_15px_var(--root-glow)]",
+    cuc: "border-2 shadow-[0_0_20px_var(--root-glow)]",
+  }[root.grade];
+
+  const elementClasses = {
+    kim: "border-slate-200/80 bg-slate-100/10 text-slate-100 [--root-glow:rgba(226,232,240,0.68)]",
+    moc: "border-emerald-500/80 bg-emerald-950/40 text-emerald-300 [--root-glow:rgba(16,185,129,0.68)]",
+    thuy: "border-cyan-500 bg-cyan-950/40 text-cyan-300 [--root-glow:rgba(6,182,212,0.72)]",
+    hoa: "border-red-500/80 bg-red-950/40 text-red-300 [--root-glow:rgba(239,68,68,0.68)]",
+    tho: "border-amber-500/80 bg-amber-950/40 text-amber-300 [--root-glow:rgba(245,158,11,0.68)]",
+  }[root.element];
+
+  const gradeBorder = {
+    ha: {
+      kim: "border-slate-300/50",
+      moc: "border-emerald-800/50",
+      thuy: "border-cyan-800/50",
+      hoa: "border-red-800/50",
+      tho: "border-amber-800/50",
+    },
+    trung: {
+      kim: "border-slate-300/80",
+      moc: "border-emerald-600/80",
+      thuy: "border-cyan-600/80",
+      hoa: "border-red-600/80",
+      tho: "border-amber-600/80",
+    },
+    thuong: {
+      kim: "border-slate-200",
+      moc: "border-emerald-400",
+      thuy: "border-cyan-400",
+      hoa: "border-red-400",
+      tho: "border-amber-400",
+    },
+    cuc: {
+      kim: "border-slate-100",
+      moc: "border-emerald-300",
+      thuy: "border-cyan-300",
+      hoa: "border-red-300",
+      tho: "border-amber-300",
+    },
+  }[root.grade][root.element];
+
+  return cn(gradeClasses, elementClasses, gradeBorder);
 }
 
 function Game() {
@@ -137,7 +177,7 @@ function Game() {
               <p
                 className={cn(
                   "mt-2 inline-block rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors",
-                  spiritRootBadgeClass(state.root.element),
+                  spiritRootBadgeClass(state.root),
                 )}
               >
                 {rootTitle(state.root)}
@@ -546,7 +586,7 @@ function Game() {
             <p className="mt-3 font-serif text-lg leading-relaxed">
               Chúc mừng Đạo hữu <span className="font-semibold text-primary">{state.name}</span>!
               Thiên địa cảm ứng, khai mở ra{" "}
-              <span className={cn("inline-flex rounded-md px-2 py-1 font-semibold", spiritRootBadgeClass(resultRoot.element))}>{rootTitle(resultRoot)}</span>!
+              <span className={cn("inline-flex rounded-md px-2 py-1 font-semibold", spiritRootBadgeClass(resultRoot))}>{rootTitle(resultRoot)}</span>!
             </p>
             <button
               onClick={() => setResultRoot(null)}
