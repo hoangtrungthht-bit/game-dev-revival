@@ -197,10 +197,10 @@
 
 @keyframes root-aura-pulse {
   0%, 100% {
-    box-shadow: 0 0 16px #EAB30899, inset 0 0 10px #EAB30822;
+    box-shadow: 0 0 16px color-mix(in srgb, var(--root-aura-color) 60%, transparent), inset 0 0 10px color-mix(in srgb, var(--root-aura-color) 13%, transparent);
   }
   50% {
-    box-shadow: 0 0 30px #EAB308, 0 0 44px #EAB30866, inset 0 0 18px #EAB30844;
+    box-shadow: 0 0 30px var(--root-aura-color), 0 0 44px color-mix(in srgb, var(--root-aura-color) 40%, transparent), inset 0 0 18px color-mix(in srgb, var(--root-aura-color) 27%, transparent);
   }
 }
 
