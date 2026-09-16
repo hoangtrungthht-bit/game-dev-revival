@@ -202,7 +202,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
       winRate: 0.75,
       reqElement: "thuy",
       successText: "Cấm chế như nước chảy qua kẽ tay, ngươi tiến vào.",
-      failText: "Cấm chế quá ph����c tạp, ngươi bị đẩy ra.",
+      failText: "Cấm chế quá ph�����c tạp, ngươi bị đẩy ra.",
       rewards: { artifact: true, stones: 80 },
       penalties: { qiPct: -0.08 },
     },
@@ -751,37 +751,7 @@ const EVENT_TEMPLATES: ModalEventData[] = [
     },
   },
   ...createExpandedAdventureEvents(),
-].map(addOutcomeTags);
-
-function addOutcomeTags(event: ModalEventData): ModalEventData {
-  const formatTags = (outcome: string, values: AdventureReward | AdventurePenalty) => {
-    const tags: string[] = [];
-    if (values.qiPct) {
-      const sign = values.qiPct > 0 ? "+" : "-";
-      tags.push(`[${sign} ${Math.abs(values.qiPct) * 100}% tu vi]`);
-    }
-    if (values.stones) {
-      const sign = values.stones > 0 ? "+" : "-";
-      tags.push(`[${sign} ${Math.abs(values.stones)} Linh Thạch]`);
-    }
-    const missingTags = tags.filter((tag) => !outcome.includes(tag));
-    return missingTags.length ? `${outcome.replace(/[.!。]+$/, "")} ${missingTags.join(" ")}` : outcome;
-  };
-
-  return {
-    ...event,
-    option1: {
-      ...event.option1,
-      successText: formatTags(event.option1.successText, event.option1.rewards),
-      failText: formatTags(event.option1.failText, event.option1.penalties),
-    },
-    option2: {
-      ...event.option2,
-      successText: formatTags(event.option2.successText, event.option2.rewards),
-      failText: formatTags(event.option2.failText, event.option2.penalties),
-    },
-  };
-}
+];
 
 function createExpandedAdventureEvents(): ModalEventData[] {
   const templates: Array<{
@@ -859,7 +829,7 @@ function createExpandedAdventureEvents(): ModalEventData[] {
     ["Kiếm Các", "Một kiếm các", "kiếm ý sắc bén", "kim" as ElementId],
     ["Mê Cảnh", "Một mê cảnh", "ảo quang kỳ dị", undefined],
     ["Vân Hải", "Một vân hải", "vân khí dày đặc", undefined],
-    ["Tử Trúc Lâm", "Một tử trúc lâm", "mộc khí xanh biếc", "moc" as ElementId],
+    ["T�� Trúc Lâm", "Một tử trúc lâm", "mộc khí xanh biếc", "moc" as ElementId],
     ["Lôi Đài", "Một lôi đài", "lôi quang rền vang", undefined],
     ["Dược Cốc", "Một dược cốc", "hương thuốc nồng đậm", "moc" as ElementId],
     ["Băng Cung", "Một băng cung", "băng linh lạnh buốt", "thuy" as ElementId],
