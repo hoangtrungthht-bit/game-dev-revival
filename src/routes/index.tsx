@@ -63,6 +63,16 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "nhatky", label: "Nhật Ký" },
 ];
 
+function spiritRootBadgeClass(element: SpiritRoot["element"]) {
+  return {
+    kim: "border-slate-200/70 bg-slate-100/10 text-slate-100 shadow-[0_0_12px_rgba(226,232,240,0.18)]",
+    moc: "border-emerald-500/60 bg-emerald-500/10 text-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.18)]",
+    thuy: "border-cyan-500/70 bg-cyan-500/15 text-cyan-300 shadow-[0_0_16px_rgba(6,182,212,0.3)]",
+    hoa: "border-red-500/60 bg-red-500/10 text-red-300 shadow-[0_0_12px_rgba(239,68,68,0.18)]",
+    tho: "border-amber-600/60 bg-amber-500/10 text-amber-300 shadow-[0_0_12px_rgba(180,83,9,0.2)]",
+  }[element];
+}
+
 function Game() {
   const { state, now, loaded, flash, actions } = useCultivation();
   const audio = useGameAudio();
@@ -124,7 +134,12 @@ function Game() {
             <h2 className="mt-1 font-serif text-2xl text-primary">{realmTitle(state)}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{REALMS[state.realm]!.desc}</p>
             {state.root && (
-              <p className="mt-2 inline-block rounded-md border border-border bg-background/40 px-2.5 py-1 text-xs font-medium">
+              <p
+                className={cn(
+                  "mt-2 inline-block rounded-md border px-2.5 py-1 text-xs font-semibold transition-colors",
+                  spiritRootBadgeClass(state.root.element),
+                )}
+              >
                 {rootTitle(state.root)}
               </p>
             )}
