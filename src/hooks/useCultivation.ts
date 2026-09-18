@@ -60,6 +60,7 @@ export function useCultivation() {
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
   const lastTick = useRef(0);
+  const recentEvents = useRef<string[]>([]);
 
   // Nạp dữ liệu đã lưu (chỉ chạy trên trình duyệt)
   useEffect(() => {
@@ -349,11 +350,19 @@ export function useCultivation() {
         };
       }
 
-      // Luồng text stream dùng đúng pool 70% trung lập / 30% có biến động tài nguyên.
-      // Sự kiện trung lập luôn giữ type info và không tạo flash cộng/trừ tài nguyên.
-      const streamEvent = TEXT_STREAM_EVENTS[Math.floor(Math.random() * TEXT_STREAM_EVENTS.length)]!;
-      const isNeutral = streamEvent.type === "info";
-      const text = streamEvent.message;
+  // Luồng text stream dùng pool 60% trung lập / 40% có biến động tài nguyên.
+  // Không cho cùng một câu xuất hiện lại trong 25 lượt kế tiếp.
+  const availableEvents = TEXT_STREAM_EVENTS.filter(
+    (event) => !recentEvents.current.includes(event.message),
+  );
+  const eventPool = availableEvents.length > 0 ? availableEvents : TEXT_STREAM_EVENTS;
+  const streamEvent = eventPool[Math.floor(Math.random() * eventPool.length)]!;
+  recentEvents.current = [
+    streamEvent.message,
+    ...recentEvents.current.filter((message) => message !== streamEvent.message),
+  ].slice(0, 25);
+  const isNeutral = streamEvent.type === "info";
+  const text = streamEvent.message;
       const kind = isNeutral
         ? "info"
         : streamEvent.type === "reward"
