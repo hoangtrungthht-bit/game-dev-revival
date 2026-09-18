@@ -118,9 +118,9 @@ function Game() {
 
   return (
     <div className="min-h-screen bg-[#0b0f17] text-foreground ink-bg">
-      <div className="mx-auto w-full max-w-[560px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
+      <div className="mx-auto flex min-h-screen w-full max-w-[400px] flex-col overflow-hidden border-x border-primary/10 bg-[#0f1521] px-2 pb-4 pt-3 shadow-[0_0_80px_rgba(0,0,0,0.45)] sm:px-3 sm:pt-5 sm:pb-6">
         <header
-          className="root-aura rounded-2xl border border-primary/25 bg-[#121824] p-3.5 shadow-2xl sm:p-5"
+          className="root-aura shrink-0 rounded-2xl border border-primary/25 bg-[#121824] p-3.5 shadow-2xl sm:p-4"
           style={rootAuraStyle(state.root)}
         >
           <div className="flex items-start justify-between gap-3">
@@ -177,7 +177,7 @@ function Game() {
 
         </header>
 
-        <section className="mx-auto mt-4 grid max-w-[520px] grid-cols-1 gap-4 sm:mt-6 sm:gap-6 lg:max-w-none lg:grid-cols-[340px_minmax(0,1fr)]">
+        <section className="mx-auto mt-4 grid w-full min-w-0 grid-cols-1 gap-4 sm:mt-5 sm:gap-5">
           {/* Bảng nhân vật */}
           <aside
             className={cn(
@@ -281,7 +281,7 @@ function Game() {
           {/* Khu vực chính */}
           <main className="root-aura min-w-0 rounded-xl border bg-black backdrop-blur" style={rootAuraStyle(state.root)}>
             <nav
-              className="grid grid-cols-3 gap-1.5 border-b border-border/70 p-2 sm:grid-cols-6 sm:gap-1"
+              className="grid grid-cols-3 gap-1 border-b border-border/70 p-2"
               aria-label="Tính năng"
             >
               {TABS.map((t) => (
@@ -290,7 +290,7 @@ function Game() {
                   onClick={() => setTab(t.id)}
                   aria-current={tab === t.id ? "page" : undefined}
                   className={cn(
-                    "min-h-12 min-w-0 rounded-md px-2 py-2.5 text-sm font-medium leading-tight transition sm:min-h-10 sm:px-3.5 sm:py-2",
+                    "min-h-11 min-w-0 rounded-md px-1 py-2 text-[11px] font-medium leading-tight transition",
                     tab === t.id
                       ? "bg-primary/15 text-primary"
                       : "text-muted-foreground hover:text-foreground",
@@ -301,7 +301,7 @@ function Game() {
               ))}
             </nav>
 
-            <div className="min-w-0 p-4 sm:p-5">
+            <div className="min-w-0 p-3 sm:p-4">
               {!loaded && <p className="text-sm text-muted-foreground">Đang dẫn khí...</p>}
 
               {loaded && tab === "tuluyen" && (
