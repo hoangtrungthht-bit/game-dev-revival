@@ -118,7 +118,7 @@ function Game() {
 
   return (
     <div className="min-h-screen bg-[#0b0f17] text-foreground ink-bg">
-      <div className="mx-auto w-full max-w-[960px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
+      <div className="mx-auto w-full max-w-[1180px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
         <header
           className="root-aura rounded-2xl border border-primary/25 bg-[#121824] p-3.5 shadow-2xl sm:p-5"
           style={rootAuraStyle(state.root)}
@@ -167,28 +167,23 @@ function Game() {
             })}
           </div>
 
-          <div className="mt-4 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-sm">
-            <input
-              value={state.name}
-              onChange={(e) => actions.rename(e.target.value)}
-              className="min-h-10 min-w-0 w-full rounded-md border border-border bg-card/70 px-3 py-2 text-base outline-none focus:border-primary sm:min-h-0 sm:w-44 sm:py-1.5 sm:text-sm"
-              aria-label="Đạo hiệu"
-            />
-            <span className="shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1.5 text-xs text-primary sm:px-3">
-              {fmt(state.stones)} linh thạch
-            </span>
-          </div>
         </header>
 
-        <section className="mt-4 grid grid-cols-1 gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+        <section className="mt-4 grid grid-cols-1 gap-4 sm:mt-6 sm:gap-6 md:grid-cols-12">
           {/* Bảng nhân vật */}
           <aside
             className={cn(
-              "root-aura root-panel min-w-0 rounded-xl border bg-black p-4 backdrop-blur sm:p-5",
+              "root-aura root-panel min-w-0 rounded-xl border bg-black p-4 backdrop-blur sm:p-5 md:col-span-4",
               state.root && ELEMENT_INFO[state.root.element].dark && GRADE_INFO[state.root.grade].opacity >= 0.5 && "root-panel-dark",
             )}
             style={{ ...rootPanelStyle(state.root), ...rootAuraStyle(state.root) }}
           >
+            <div className="mb-4 flex items-center justify-between gap-3 border-b border-border/70 bg-black pb-3">
+              <span className="truncate font-serif text-lg font-semibold text-foreground">{state.name}</span>
+              <span className="shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1.5 text-xs text-primary">
+                {fmt(state.stones)} linh thạch
+              </span>
+            </div>
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Cảnh giới</p>
             <h2 className="mt-1 font-serif text-2xl text-primary">{realmTitle(state)}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{REALMS[state.realm]!.desc}</p>
@@ -270,9 +265,9 @@ function Game() {
           </aside>
 
           {/* Khu vực chính */}
-          <main className="root-aura min-w-0 rounded-xl border bg-black backdrop-blur" style={rootAuraStyle(state.root)}>
+          <main className="root-aura min-w-0 rounded-xl border bg-black backdrop-blur md:col-span-8" style={rootAuraStyle(state.root)}>
             <nav
-              className="grid grid-cols-3 gap-1.5 border-b border-border/70 p-2 sm:grid-cols-6 sm:gap-1"
+              className="grid grid-cols-3 gap-1.5 border-b border-border/70 p-2 md:grid-cols-6 md:gap-1"
               aria-label="Tính năng"
             >
               {TABS.map((t) => (
@@ -281,7 +276,7 @@ function Game() {
                   onClick={() => setTab(t.id)}
                   aria-current={tab === t.id ? "page" : undefined}
                   className={cn(
-                    "min-h-12 min-w-0 rounded-md px-2 py-2.5 text-sm font-medium leading-tight transition sm:min-h-10 sm:px-3.5 sm:py-2",
+                    "min-h-12 min-w-0 whitespace-nowrap rounded-md px-1 py-2.5 text-xs font-medium leading-tight transition md:min-h-10 md:px-1.5 md:py-2",
                     tab === t.id
                       ? "bg-primary/15 text-primary"
                       : "text-muted-foreground hover:text-foreground",
@@ -674,7 +669,7 @@ function OnboardingModal({
         <div className="mt-6 space-y-4">
           <div>
             <label htmlFor="ob-name" className="text-xs uppercase tracking-widest text-muted-foreground">
-              Đại danh
+              Đ��i danh
             </label>
             <input
               id="ob-name"
