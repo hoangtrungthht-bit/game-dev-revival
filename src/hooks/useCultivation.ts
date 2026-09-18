@@ -370,6 +370,12 @@ export function useCultivation() {
           : "bad";
       const stones = streamEvent.baseLinhThach;
       const qiDelta = streamEvent.baseLinhKhi / 100;
+      const herbDelta = {
+        linhthao: streamEvent.linhThao,
+        huyetchi: streamEvent.huyetChi,
+        bangnien: streamEvent.bangLien,
+        longdam: streamEvent.longDamThao,
+      };
 
       if (!isNeutral) {
         announce(
@@ -382,6 +388,13 @@ export function useCultivation() {
       return {
         ...s,
         stones: Math.max(0, s.stones + stones),
+        herbs: {
+          ...s.herbs,
+          linhthao: Math.max(0, s.herbs.linhthao + (herbDelta.linhthao ?? 0)),
+          huyetchi: Math.max(0, s.herbs.huyetchi + (herbDelta.huyetchi ?? 0)),
+          bangnien: Math.max(0, s.herbs.bangnien + (herbDelta.bangnien ?? 0)),
+          longdam: Math.max(0, s.herbs.longdam + (herbDelta.longdam ?? 0)),
+        },
         qi: Math.max(0, s.qi + qiNeeded(s) * qiDelta),
         exploringUntil: Date.now() + 6000,
         log: pushLog(s.log, text, kind),
@@ -424,7 +437,7 @@ export function useCultivation() {
   }, []);
 
   const rename = useCallback((name: string) => {
-    setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo Hữu Vô Danh" }));
+    setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo H���u Vô Danh" }));
   }, []);
 
   const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot) => {

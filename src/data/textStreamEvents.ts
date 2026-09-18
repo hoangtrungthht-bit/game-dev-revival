@@ -29,16 +29,49 @@ export const NEUTRAL_EVENTS = Array.from({ length: 100 }, (_, index) => ({
     "ngồi dưới bóng cây, lặng lẽ nhìn nắng xuyên qua kẽ lá.",
     "nghe tiếng chuông tông môn vọng lại từ xa.",
     "bắt gặp một cơn gió mát thổi qua sơn cốc.",
-  ][index % 10] + ` (${index + 1})`,
+  ][index % 10],
   // Dùng loại info để giao diện hiển thị trung tính và không tạo thông báo thưởng/phạt.
   type: "info",
   linhThach: 0,
   linhKhi: 0,
 }));
 
-// 200 MẪU SỰ KIỆN PHONG PHÚ (100 CƠ DUYÊN + 100 RỦI RO)
+// 50 sự kiện thu thập linh dược: 20 Linh Thảo, 15 Huyết Chi,
+// 10 Băng Liên và 5 Long Đảm Thảo (tỷ lệ 40/30/20/10 trong nhóm linh dược).
+const HERB_EVENTS = [
+  ...Array.from({ length: 20 }, (_, index) => ({
+    text: `hái được Linh Thảo non bên triền núi, thu hoạch ${index % 3 + 2} cây. [+ ${index % 3 + 2} Linh Thảo]`,
+    type: "reward" as const,
+    linhThach: 0,
+    linhKhi: 0,
+    linhThao: index % 3 + 2,
+  })),
+  ...Array.from({ length: 15 }, (_, index) => ({
+    text: `tìm thấy Huyết Chi đỏ thẫm trong khe đá, thu hoạch ${index % 2 + 1} cây. [+ ${index % 2 + 1} Huyết Chi]`,
+    type: "reward" as const,
+    linhThach: 0,
+    linhKhi: 0,
+    huyetChi: index % 2 + 1,
+  })),
+  ...Array.from({ length: 10 }, (_, index) => ({
+    text: `vượt qua sườn núi băng giá và hái được Băng Liên quý hiếm. [+ 1 Băng Liên]`,
+    type: "reward" as const,
+    linhThach: 0,
+    linhKhi: 0,
+    bangLien: 1,
+  })),
+  ...Array.from({ length: 5 }, (_, index) => ({
+    text: `lần theo long khí dưới vực sâu và phát hiện Long Đảm Thảo trân quý. [+ 1 Long Đảm Thảo]`,
+    type: "reward" as const,
+    linhThach: 0,
+    linhKhi: 0,
+    longDamThao: 1,
+  })),
+];
 
+// Các sự kiện có chỉ số, trong đó nhóm thu thập linh dược được ưu tiên.
 export const EVENTS = [
+  ...HERB_EVENTS,
   // ==========================================
   // I. CƠ DUYÊN & THU HOẠCH (100 Sự Kiện +Linh Thạch / +Linh Khí)
   // ==========================================
@@ -1257,6 +1290,10 @@ export function generate1000TextEvents() {
       type: evt.type,
       baseLinhThach: evt.linhThach * variance,
       baseLinhKhi: evt.linhKhi * variance,
+      linhThao: (evt.linhThao ?? 0) * variance,
+      huyetChi: (evt.huyetChi ?? 0) * variance,
+      bangLien: (evt.bangLien ?? 0) * variance,
+      longDamThao: (evt.longDamThao ?? 0) * variance,
     });
   }
 
