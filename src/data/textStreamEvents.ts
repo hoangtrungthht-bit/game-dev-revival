@@ -229,7 +229,7 @@ export const EVENTS = [
     linhKhi: 45,
   },
   {
-    text: "được linh thú quy phụng nhả ra một viên nội đan nhỏ. [+ 60% tu vi] [+ 25 Linh Thạch]",
+    text: "được linh thú quy phụng nhả ra một viên nội đan nhỏ. [+ 60% tu vi] [+ 25 Linh Th��ch]",
     type: "reward",
     linhThach: 25,
     linhKhi: 60,
@@ -487,7 +487,7 @@ export const EVENTS = [
     linhKhi: 45,
   },
   {
-    text: "được chưởng môn khen ngợi và ban chút tài nguyên tu luyện. [+ 50% tu vi] [+ 50 Linh Thạch]",
+    text: "đư���c chưởng môn khen ngợi và ban chút tài nguyên tu luyện. [+ 50% tu vi] [+ 50 Linh Thạch]",
     type: "reward",
     linhThach: 50,
     linhKhi: 50,
@@ -1068,7 +1068,7 @@ export const EVENTS = [
     linhKhi: -10,
   },
   {
-    text: "bị chuột cắn hỏng bao đựng linh thảo. [- 15% tu vi] [- 15 Linh Thạch]",
+    text: "b�� chuột cắn hỏng bao đựng linh thảo. [- 15% tu vi] [- 15 Linh Thạch]",
     type: "penalty",
     linhThach: -15,
     linhKhi: -15,
@@ -1238,10 +1238,10 @@ export const EVENTS = [
   },
 ];
 
-// Sinh đúng 1,000 biến thể: 70% trung lập và 30% có thay đổi tài nguyên.
+// Sinh đúng 1,000 biến thể: 60% trung lập và 40% có thay đổi tài nguyên.
 export function generate1000TextEvents() {
   const total = 1000;
-  const neutralCount = Math.round(total * 0.7);
+  const neutralCount = Math.round(total * 0.6);
   const list = [];
 
   for (let i = 0; i < total; i++) {
