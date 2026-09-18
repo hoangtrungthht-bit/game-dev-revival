@@ -82,13 +82,13 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "phát hiện một khóm Linh Thảo dại mọc bên đường. [+ 30% tu vi] [+ 5 Linh Thạch]",
+    text: "phát hiện một túi trữ vật bên đường. [+ 50 Linh Thạch]",
     type: "reward",
-    linhThach: 5,
-    linhKhi: 30,
+    linhThach: 50,
+    linhKhi: 0,
   },
   {
-    text: "ngồi thiền một canh giờ, ngộ ra chút ý niệm thiên địa. [+ 50% tu vi]",
+    text: "ngồi thiền một canh giờ, ngộ ra chút ý niệm thiên địa. [+ 10% tu vi]",
     type: "reward",
     linhThach: 0,
     linhKhi: 50,
@@ -100,31 +100,31 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "vô tình chạm trán một con Yêu Lang nhỏ và dễ dàng đánh đuổi. [+ 20% tu vi] [+ 10 Linh Thạch]",
+    text: "vô tình chạm trán một con Yêu Lang nhỏ và dễ dàng đánh đuổi. [+ 5% tu vi] [+ 10 Linh Thạch]",
     type: "reward",
     linhThach: 10,
-    linhKhi: 20,
+    linhKhi: 5,
   },
   {
-    text: "tìm thấy một bình Thanh Dược Dịch bị bỏ rơi dưới gốc cây cổ thụ. [+ 40% tu vi]",
+    text: "tìm thấy một bình Thanh Dược Dịch bị bỏ rơi dưới gốc cây cổ thụ. [+ 10% tu vi]",
     type: "reward",
     linhThach: 0,
-    linhKhi: 40,
+    linhKhi: 10,
   },
   {
-    text: "hái được quả Linh Chu Quả 50 năm, ăn vào thấy khí huyết dồi dào. [+ 60% tu vi]",
+    text: "hái được quả Linh Chu Quả 50 năm, ăn vào thấy khí huyết dồi dào. [+ 30% tu vi]",
     type: "reward",
     linhThach: 0,
-    linhKhi: 60,
+    linhKhi: 30,
   },
   {
-    text: "khai quật được một chiếc túi trữ vật cũ của tiền bối. [+ 20% tu vi] [+ 50 Linh Thạch]",
+    text: "khai quật được một chiếc túi trữ vật cũ của tiền bối. [+ 10% tu vi] [+ 150 Linh Thạch]",
     type: "reward",
-    linhThach: 50,
-    linhKhi: 20,
+    linhThach: 150,
+    linhKhi: 10,
   },
   {
-    text: "uống được một ngụm suối Linh Tuyền tinh khiết. [+ 45% tu vi]",
+    text: "uống được một ngụm suối Linh Tuyền tinh khiết. [+ 15% tu vi]",
     type: "reward",
     linhThach: 0,
     linhKhi: 45,
@@ -136,58 +136,58 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "quan sát hai con yến hạc giao chiến, lĩnh hội chút thân pháp. [+ 35% tu vi]",
+    text: "quan sát hai con yến hạc giao chiến, lĩnh hội chút thân pháp. [+ 15% tu vi]",
     type: "reward",
     linhThach: 0,
-    linhKhi: 35,
-  },
-  {
-    text: "được một vị sư huynh đồng môn chỉ điểm vài đường kiếm pháp. [+ 55% tu vi]",
-    type: "reward",
-    linhThach: 0,
-    linhKhi: 55,
-  },
-  {
-    text: "phát hiện mạch khoáng linh thạch lộ thiên, tranh thủ đào bới. [+ 15% tu vi] [+ 40 Linh Thạch]",
-    type: "reward",
-    linhThach: 40,
     linhKhi: 15,
   },
   {
-    text: "nhặt được lông vũ của Hỏa Phượng Yêu Thú, tỏa ra nhiệt khí dịu nhẹ. [+ 25% tu vi] [+ 20 Linh Thạch]",
+    text: "được một vị sư huynh đồng môn chỉ điểm vài đường kiếm pháp. [+ 15% tu vi]",
     type: "reward",
-    linhThach: 20,
-    linhKhi: 25,
+    linhThach: 0,
+    linhKhi: 15,
   },
   {
-    text: "giúp đỡ một nông dân tu tiên và được biếu ít thảo dược. [+ 30% tu vi] [+ 10 Linh Thạch]",
+    text: "phát hiện mạch khoáng linh thạch lộ thiên, tranh thủ đào bới. [+ 340 Linh Thạch]",
     type: "reward",
-    linhThach: 10,
-    linhKhi: 30,
+    linhThach: 340,
+    linhKhi: 0,
   },
   {
-    text: "bắt được một con Linh Cừu nhỏ mang về đổi phần thưởng. [+ 10% tu vi] [+ 35 Linh Thạch]",
+    text: "nhặt được lông vũ của Hỏa Phượng Yêu Thú, tỏa ra nhiệt khí dịu nhẹ. [+ 10% tu vi]" ,
     type: "reward",
-    linhThach: 35,
+    linhThach: 0,
     linhKhi: 10,
   },
   {
-    text: "nhìn chòm sao xoay chuyển đêm qua, tâm cảnh được gột rửa. [+ 65% tu vi]",
+    text: "giúp đỡ một nông dân tu tiên và được biếu ít thảo dược. [+ 5% tu vi] ",
     type: "reward",
-    linhThach: 0,
-    linhKhi: 65,
+    linhThach: 1,
+    linhKhi: 5,
   },
   {
-    text: "tìm thấy trận pháp ngụ ý cổ xưa, ngồi nghiên cứu cả buổi. [+ 50% tu vi]",
+    text: "bắt được một con Linh Cừu nhỏ mang về đổi phần thưởng. [+ 35 Linh Thạch]",
     type: "reward",
-    linhThach: 0,
-    linhKhi: 50,
+    linhThach: 35,
+    linhKhi: 0,
   },
   {
-    text: "thu hoạch được vạt Tuyết Liên mọc mông cừu trên đỉnh núi. [+ 45% tu vi] [+ 15 Linh Thạch]",
+    text: "nhìn chòm sao xoay chuyển đêm qua, tâm cảnh được gột rửa. [+ 15% tu vi]",
     type: "reward",
-    linhThach: 15,
-    linhKhi: 45,
+    linhThach: 0,
+    linhKhi: 15,
+  },
+  {
+    text: "tìm thấy trận pháp ngụ ý cổ xưa, ngồi nghiên cứu cả buổi cuối cùng cũng lĩnh ngộ. [+ 20% tu vi]",
+    type: "reward",
+    linhThach: 0,
+    linhKhi: 20,
+  },
+  {
+    text: "thu hoạch được vạt Tuyết Liên mọc trên đỉnh núi, đem bán ở quán ăn.  [+ 105 Linh Thạch]",
+    type: "reward",
+    linhThach: 105,
+    linhKhi: 0,
   },
   {
     text: "đỡ đòn giúp một tán tu, người đó cảm tạ bằng linh thạch. [+ 45 Linh Thạch]",
@@ -196,40 +196,40 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "nhặt được một cuốn tàn đản công pháp bị rách góc. [+ 40% tu vi] [+ 10 Linh Thạch]",
-    type: "reward",
-    linhThach: 10,
-    linhKhi: 40,
-  },
-  {
-    text: "bắt gặp linh miêu dẫn đường tới một kho báu nhỏ. [+ 15% tu vi] [+ 60 Linh Thạch]",
-    type: "reward",
-    linhThach: 60,
-    linhKhi: 15,
-  },
-  {
-    text: "ngửi thấy mùi dược hương thanh tao, cảm giác thông suốt kinh mạch. [+ 35% tu vi]",
+    text: "nhặt được một cuốn tàn đản công pháp bị rách góc rồi bế quan cảm ngộ suốt 3 ngày đêm. [+ 20% tu vi] ",
     type: "reward",
     linhThach: 0,
-    linhKhi: 35,
+    linhKhi: 20,
   },
   {
-    text: "nhặt được một viên Linh Châu có công năng tụ khí. [+ 50% tu vi] [+ 20 Linh Thạch]",
+    text: "bắt gặp linh miêu dẫn đường tới một kho báu nhỏ. [+ 60 Linh Thạch]",
     type: "reward",
-    linhThach: 20,
-    linhKhi: 50,
+    linhThach: 60,
+    linhKhi: 0,
   },
   {
-    text: "tiêu diệt một bầy Độc Đạt hoang dại, thu thập được mật độc bán giá cao. [+ 10% tu vi] [+ 55 Linh Thạch]",
+    text: "ngửi thấy mùi dược hương thanh tao, cảm giác thông suốt kinh mạch. [+ 5% tu vi]",
     type: "reward",
-    linhThach: 55,
-    linhKhi: 10,
+    linhThach: 0,
+    linhKhi: 5,
   },
   {
-    text: "thông qua kiểm tra thể chất, được trưởng lão ban thưởng chút linh thạch. [+ 20% tu vi] [+ 30 Linh Thạch]",
+    text: "nhặt được một viên Linh Châu có công năng tụ khí. [+ 20% tu vi]",
+    type: "reward",
+    linhThach: 0,
+    linhKhi: 20,
+  },
+  {
+    text: "tiêu diệt một bầy Độc Đạt hoang dại,bị thương nhẹ nhưng thu thập được mật độc bán giá cao. [- 10% tu vi] [+ 255 Linh Thạch]",
+    type: "reward",
+    linhThach: 255,
+    linhKhi: -10,
+  },
+  {
+    text: "thông qua kiểm tra thể chất, được trưởng lão ban thưởng chút linh thạch. [+ 30 Linh Thạch]",
     type: "reward",
     linhThach: 30,
-    linhKhi: 20,
+    linhKhi: 0,
   },
   {
     text: "tìm thấy hốc đá nơi loài Linh Ô làm tổ, nhặt được trứng yêu thú. [+ 10% tu vi] [+ 40 Linh Thạch]",
@@ -262,13 +262,13 @@ export const EVENTS = [
     linhKhi: 45,
   },
   {
-    text: "được linh thú quy phụng nhả ra một viên nội đan nhỏ. [+ 60% tu vi] [+ 25 Linh Th��ch]",
+    text: "được linh thú quy phụng nhả ra một viên nội đan nhỏ. [+ 60% tu vi] [+ 25 Linh Thạch]",
     type: "reward",
     linhThach: 25,
     linhKhi: 60,
   },
   {
-    text: "nhặt được v��i đồng tiền cổ ngập tràn ngọc khí. [+ 15% tu vi] [+ 35 Linh Thạch]",
+    text: "nhặt được vài đồng tiền cổ ngập tràn ngọc khí. [+ 15% tu vi] [+ 35 Linh Thạch]",
     type: "reward",
     linhThach: 35,
     linhKhi: 15,
@@ -520,7 +520,7 @@ export const EVENTS = [
     linhKhi: 45,
   },
   {
-    text: "đư���c chưởng môn khen ngợi và ban chút tài nguyên tu luyện. [+ 50% tu vi] [+ 50 Linh Thạch]",
+    text: "được chưởng môn khen ngợi và ban chút tài nguyên tu luyện. [+ 50% tu vi] [+ 50 Linh Thạch]",
     type: "reward",
     linhThach: 50,
     linhKhi: 50,
@@ -592,7 +592,7 @@ export const EVENTS = [
     linhKhi: 30,
   },
   {
-    text: "tìm đư���c bộ lông cáo chín đuôi tuyệt đẹp. [+ 80 Linh Thạch]",
+    text: "tìm được bộ lông cáo chín đuôi tuyệt đẹp. [+ 80 Linh Thạch]",
     type: "reward",
     linhThach: 80,
     linhKhi: 0,
@@ -1101,7 +1101,7 @@ export const EVENTS = [
     linhKhi: -10,
   },
   {
-    text: "b�� chuột cắn hỏng bao đựng linh thảo. [- 15% tu vi] [- 15 Linh Thạch]",
+    text: "bị chuột cắn hỏng bao đựng linh thảo. [- 15% tu vi] [- 15 Linh Thạch]",
     type: "penalty",
     linhThach: -15,
     linhKhi: -15,
@@ -1275,13 +1275,32 @@ export const EVENTS = [
 export function generate1000TextEvents() {
   const total = 1000;
   const neutralCount = Math.round(total * 0.6);
-  const list = [];
+  const list: Array<{
+    id: string;
+    message: string;
+    type: string;
+    baseLinhThach: number;
+    baseLinhKhi: number;
+    linhThao: number;
+    huyetChi: number;
+    bangLien: number;
+    longDamThao: number;
+  }> = [];
 
   for (let i = 0; i < total; i++) {
     const isNeutral = i < neutralCount;
     const act = ACTIONS[Math.floor(Math.random() * ACTIONS.length)]!;
     const source = isNeutral ? NEUTRAL_EVENTS : EVENTS;
-    const evt = source[Math.floor(Math.random() * source.length)]!;
+    const evt = source[Math.floor(Math.random() * source.length)]! as {
+      text?: string;
+      type: string;
+      linhThach: number;
+      linhKhi: number;
+      linhThao?: number;
+      huyetChi?: number;
+      bangLien?: number;
+      longDamThao?: number;
+    };
     const variance = isNeutral ? 1 : Math.floor(Math.random() * 3) + 1;
 
     list.push({
@@ -1300,7 +1319,7 @@ export function generate1000TextEvents() {
   // Trộn sau khi chia nhóm để tỷ lệ vẫn chính xác nhưng thứ tự không đoán trước.
   for (let i = list.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [list[i], list[j]] = [list[j], list[i]];
+    [list[i]!, list[j]!] = [list[j]!, list[i]!];
   }
 
   return list;
