@@ -144,24 +144,32 @@ function Game() {
             </button>
           </div>
 
-          <div className="relative mt-6 flex items-center justify-between px-3 pb-1" aria-label="Tiến trình đăng tiên lộ">
-            <div className="absolute left-5 right-5 top-1/2 h-1 -translate-y-0.5 rounded-full bg-border" aria-hidden="true" />
-            {Array.from({ length: 9 }, (_, index) => {
-              const reached = index <= Math.min(8, stage);
+          <div className="relative mt-7 flex items-start justify-between px-1" aria-label="Tiến trình đăng tiên lộ">
+            <div className="absolute left-3 right-3 top-[3.65rem] h-px bg-border" aria-hidden="true" />
+            {REALMS.map((realm, index) => {
+              const reached = index <= state.realm;
+              const numbers = state.destinyNumbers.slice(index * 3, index * 3 + 3);
               return (
-                <div key={index} className="relative z-10 flex items-center justify-center">
-                  {index === 0 && reached && (
-                    <span className="absolute -top-6 whitespace-nowrap rounded border border-jade/50 bg-jade/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-jade">
-                      {stage + 1}
-                    </span>
-                  )}
+                <div key={realm.name} className="relative z-10 flex min-w-0 flex-1 flex-col items-center gap-2">
+                  <div className="flex h-8 items-center justify-center">
+                    {index > 0 && reached && numbers.length === 3 ? (
+                      <span className="rounded border border-jade/50 bg-jade/10 px-1 py-0.5 font-mono text-[9px] font-bold tracking-[0.12em] text-jade">
+                        {numbers.join(" ")}
+                      </span>
+                    ) : (
+                      <span className="text-[9px] text-muted-foreground/40">•••</span>
+                    )}
+                  </div>
                   <span
                     className={cn(
                       "block rounded-full border-2",
-                      index === 0 && reached ? "size-4 border-primary bg-primary shadow-[0_0_12px_rgba(245,158,11,0.6)]" : "size-3.5 border-border bg-secondary",
-                      reached && index > 0 && "border-primary/70 bg-primary/70",
+                      index === state.realm ? "size-4 border-primary bg-primary shadow-[0_0_12px_rgba(245,158,11,0.6)]" : "size-3.5 border-border bg-secondary",
+                      reached && index !== state.realm && "border-primary/70 bg-primary/70",
                     )}
                   />
+                  <span className={cn("max-w-12 truncate text-center text-[8px] leading-tight sm:max-w-none sm:text-[10px]", reached ? "text-primary" : "text-muted-foreground/50")}>
+                    {realm.name}
+                  </span>
                 </div>
               );
             })}
@@ -581,8 +589,8 @@ function Game() {
       {showOnboarding && (
         <OnboardingModal
           onConfirm={(name, gender, digits) => {
-            const root = hashSpiritRoot(digits);
-            actions.onboard(name, gender, root);
+            const root = hashSpiritRoot(`${digits}:${Date.now()}:${gender}`);
+            actions.onboard(name, gender, root, digits);
             setResultRoot(root);
           }}
         />
@@ -667,9 +675,12 @@ function OnboardingModal({
         <p className="text-center font-serif text-xs uppercase tracking-[0.4em] text-primary/80">
           Tiên Lộ Vô Tận
         </p>
-        <h2 className="mt-3 text-center font-serif text-xl leading-relaxed">
-          Chào Đạo hữu ngày tốt lành, xin cho biết đại danh đạo hữu
-        </h2>
+  <h2 className="mt-3 text-center font-serif text-xl leading-relaxed">
+  Khai mở Thiên Cơ Thạch, định mệnh sẽ ghi nhớ đạo đồ của ngươi
+  </h2>
+  <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
+  Sáu con số, thời khắc xác nhận và giới tính sẽ kết thành hạt giống độc nhất, sinh ra 27 số Thiên Cơ cho 9 đại cảnh giới.
+  </p>
 
         <div className="mt-6 space-y-4">
           <div>

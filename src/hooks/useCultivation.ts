@@ -12,6 +12,7 @@ import {
   REALMS,
   SAVE_KEY,
   breakthroughChance,
+  createDestinyNumbers,
   isMajor,
   newGame,
   qiNeeded,
@@ -448,12 +449,18 @@ export function useCultivation() {
     setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo H���u Vô Danh" }));
   }, []);
 
-  const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot) => {
+  const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot, digits: string) => {
+    const seedCreatedAt = Date.now();
+    const destinySeed = `${digits}-${seedCreatedAt}-${gender}`;
+    const destinyNumbers = createDestinyNumbers(digits, gender, seedCreatedAt);
     setState((s) => ({
       ...s,
       name: name.slice(0, 24) || "Đạo Hữu Vô Danh",
       gender,
       root,
+      destinySeed,
+      destinyNumbers,
+      seedCreatedAt,
       log: pushLog(
         s.log,
         `Thiên địa cảm ứng, ${name} khai mở ${rootTitle(root)}, chính thức bước lên đạo đồ.`,
