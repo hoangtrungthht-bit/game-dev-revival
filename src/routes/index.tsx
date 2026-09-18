@@ -669,7 +669,7 @@ function OnboardingModal({
         <div className="mt-6 space-y-4">
           <div>
             <label htmlFor="ob-name" className="text-xs uppercase tracking-widest text-muted-foreground">
-              Đ��i danh
+              Đạo Hiệu
             </label>
             <input
               id="ob-name"

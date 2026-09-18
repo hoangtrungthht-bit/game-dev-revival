@@ -515,7 +515,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     herbQty: 2,
   },
   {
-    text: "Ngươi mua được bản đồ bí cảnh từ chợ đen và ph��t hiện túi tiền đã vơi. [- 18 Linh Thạch]",
+    text: "Ngươi mua được bản đồ bí cảnh từ chợ đen và phát hiện túi tiền đã vơi. [- 18 Linh Thạch]",
     kind: "info",
     stones: -18,
   },
@@ -984,7 +984,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     stones: -13,
   },
   {
-    text: "Ma thú khổng lồ rời hang, để l���� luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
+    text: "Ma thú khổng lồ rời hang, để lại luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
     kind: "good",
     herb: "linhthao",
     herbQty: 3,
@@ -1480,7 +1480,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     herbQty: -1,
   },
   {
-    text: "Ngươi hoàn thành chuyến đi cuối cùng qua bí c���nh và nhận kho báu. [+ 88 Linh Thạch]",
+    text: "Ngươi hoàn thành chuyến đi cuối cùng qua bí cảnh và nhận kho báu. [+ 88 Linh Thạch]",
     kind: "epic",
     stones: 88,
   },

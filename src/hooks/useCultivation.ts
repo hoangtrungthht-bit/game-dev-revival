@@ -277,7 +277,7 @@ export function useCultivation() {
           log: pushLog(s.log, "Thần thức ngưng tụ, tốc độ hấp thu linh khí tăng vọt.", "good"),
         };
       }
-      return s; // Phá Cảnh & Hộ Tâm tự động dùng khi đ��t phá
+      return s; // Phá Cảnh & Hộ Tâm tự động dùng khi đột phá
     });
   }, []);
 
@@ -445,7 +445,7 @@ export function useCultivation() {
   }, []);
 
   const rename = useCallback((name: string) => {
-    setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo H���u Vô Danh" }));
+    setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo Hữu Vô Danh" }));
   }, []);
 
   const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot) => {
