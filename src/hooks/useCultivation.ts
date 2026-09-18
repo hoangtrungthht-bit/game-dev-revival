@@ -60,6 +60,7 @@ export function useCultivation() {
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
   const lastTick = useRef(0);
+  // Lưu ID của 30 sự kiện text gần nhất để ngăn lặp lại trong thời gian ngắn.
   const recentEvents = useRef<string[]>([]);
 
   // Nạp dữ liệu đã lưu (chỉ chạy trên trình duyệt)
@@ -350,17 +351,19 @@ export function useCultivation() {
         };
       }
 
-  // Luồng text stream dùng pool 60% trung lập / 40% có biến động tài nguyên.
-  // Không cho cùng một câu xuất hiện lại trong 25 lượt kế tiếp.
-  const availableEvents = TEXT_STREAM_EVENTS.filter(
-    (event) => !recentEvents.current.includes(event.message),
-  );
-  const eventPool = availableEvents.length > 0 ? availableEvents : TEXT_STREAM_EVENTS;
-  const streamEvent = eventPool[Math.floor(Math.random() * eventPool.length)]!;
-  recentEvents.current = [
-    streamEvent.message,
-    ...recentEvents.current.filter((message) => message !== streamEvent.message),
-  ].slice(0, 25);
+      // Luồng text stream dùng pool 60% trung lập / 40% có biến động tài nguyên.
+      // Loại bỏ theo ID toàn bộ 30 sự kiện gần nhất trước khi random.
+      const availableEvents = TEXT_STREAM_EVENTS.filter(
+        (event) => !recentEvents.current.includes(event.id),
+      );
+      // Pool có đủ sự kiện để luôn duy trì cooldown 30 lượt; không fallback về
+      // danh sách đầy đủ vì fallback sẽ phá vỡ quy tắc chống lặp.
+      if (availableEvents.length === 0) return s;
+      const streamEvent = availableEvents[Math.floor(Math.random() * availableEvents.length)]!;
+      recentEvents.current = [
+        streamEvent.id,
+        ...recentEvents.current.filter((id) => id !== streamEvent.id),
+      ].slice(0, 30);
   const isNeutral = streamEvent.type === "info";
   const text = streamEvent.message;
       const kind = isNeutral
