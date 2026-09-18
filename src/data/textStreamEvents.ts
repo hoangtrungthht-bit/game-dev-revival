@@ -16,6 +16,25 @@ export const ACTIONS = [
   "Trên con đường mòn phủ đầy mêu xanh,",
 ];
 
+// 100 sự kiện trung lập: không thay đổi tu vi, linh thạch hay linh thảo.
+export const NEUTRAL_EVENTS = Array.from({ length: 100 }, (_, index) => ({
+  text: [
+    "ngắm mây trôi qua đỉnh núi, lòng thấy bình yên.",
+    "nghe tiếng suối chảy, nghỉ chân một lát bên đường.",
+    "gặp một đạo hữu lạ mặt và trao nhau lời chào.",
+    "đi ngang qua một ngôi miếu cổ phủ đầy rêu xanh.",
+    "thấy đàn chim linh bay về phương xa.",
+    "dừng lại chỉnh trang y phục trước khi tiếp tục lên đường.",
+    "quan sát dấu chân thú rừng rồi chọn lối khác để đi.",
+    "ngồi dưới bóng cây, lặng lẽ nhìn nắng xuyên qua kẽ lá.",
+    "nghe tiếng chuông tông môn vọng lại từ xa.",
+    "bắt gặp một cơn gió mát thổi qua sơn cốc.",
+  ][index % 10] + ` (${index + 1})`,
+  type: "neutral",
+  linhThach: 0,
+  linhKhi: 0,
+}));
+
 // 200 MẪU SỰ KIỆN PHONG PHÚ (100 CƠ DUYÊN + 100 RỦI RO)
 
 export const EVENTS = [
@@ -539,7 +558,7 @@ export const EVENTS = [
     linhKhi: 30,
   },
   {
-    text: "tìm được bộ lông cáo chín đuôi tuyệt đẹp. [+ 80 Linh Thạch]",
+    text: "tìm đư���c bộ lông cáo chín đuôi tuyệt đẹp. [+ 80 Linh Thạch]",
     type: "reward",
     linhThach: 80,
     linhKhi: 0,
@@ -1218,27 +1237,32 @@ export const EVENTS = [
   },
 ];
 
-// HAM SINH 1,000 BIEN THE CHUAN (SỬ DỤNG 200 EVENT MAU)
+// Sinh đúng 1,000 biến thể: 70% trung lập và 30% có thay đổi tài nguyên.
 export function generate1000TextEvents() {
+  const total = 1000;
+  const neutralCount = Math.round(total * 0.7);
   const list = [];
-  let id = 1;
 
-  for (let i = 0; i < 1000; i++) {
-    const act = ACTIONS[i % ACTIONS.length]!;
-    const evt = EVENTS[i % EVENTS.length]!;
-
-    // Tạo biến thể hệ số (1x -> 3x) ngẫu nhiên để phần thưởng/hình phạt linh hoạt
-    const variance = (i % 3) + 1;
-    const finalLinhThach = evt.linhThach !== 0 ? evt.linhThach * variance : 0;
-    const finalLinhKhi = evt.linhKhi !== 0 ? evt.linhKhi * variance : 0;
+  for (let i = 0; i < total; i++) {
+    const isNeutral = i < neutralCount;
+    const act = ACTIONS[Math.floor(Math.random() * ACTIONS.length)]!;
+    const source = isNeutral ? NEUTRAL_EVENTS : EVENTS;
+    const evt = source[Math.floor(Math.random() * source.length)]!;
+    const variance = isNeutral ? 1 : Math.floor(Math.random() * 3) + 1;
 
     list.push({
-      id: `text_evt_${id++}`,
+      id: `text_evt_${i + 1}`,
       message: `${act} ngươi ${evt.text}`,
       type: evt.type,
-      baseLinhThach: finalLinhThach,
-      baseLinhKhi: finalLinhKhi,
+      baseLinhThach: evt.linhThach * variance,
+      baseLinhKhi: evt.linhKhi * variance,
     });
+  }
+
+  // Trộn sau khi chia nhóm để tỷ lệ vẫn chính xác nhưng thứ tự không đoán trước.
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
   }
 
   return list;
