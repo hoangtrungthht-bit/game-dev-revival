@@ -43,10 +43,10 @@ export const EVENTS = [
   // I. CƠ DUYÊN & THU HOẠCH (100 Sự Kiện +Linh Thạch / +Linh Khí)
   // ==========================================
   {
-    text: "nhặt được một mẩu Linh Thạch vụn ẩn dưới khe đá. [+ 10% tu vi] [+ 15 Linh Thạch]",
+    text: "nhặt được một mẩu Linh Thạch vụn ẩn dưới khe đá. [+ 15 Linh Thạch]",
     type: "reward",
     linhThach: 15,
-    linhKhi: 10,
+    linhKhi: 0,
   },
   {
     text: "phát hiện một khóm Linh Thảo dại mọc bên đường. [+ 30% tu vi] [+ 5 Linh Thạch]",
