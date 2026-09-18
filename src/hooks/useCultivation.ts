@@ -21,6 +21,7 @@ import {
   stageIndex,
 } from "@/lib/cultivation";
 import { createQuizEvent, type AdventureReward } from "@/utils/adventureLogic";
+import { TEXT_STREAM_EVENTS } from "@/data/textStreamEvents";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
 export interface GameNotice {
@@ -348,48 +349,33 @@ export function useCultivation() {
         };
       }
 
-      // Sự kiện thường (95%): danh sách sự kiện gốc của game
-      const e = rollEncounter(stageIndex(s), Math.random);
-      const herbs = { ...s.herbs };
-      if (e.herb && e.herbQty) herbs[e.herb] += e.herbQty;
-      let artifacts = s.artifacts;
-      let text = e.text;
-      if (e.artifact) {
-        const pool = ARTIFACTS.filter(
-          (a) => !s.artifacts.includes(a.id) && a.mult <= 0.4 + stageIndex(s) * 0.12,
-        );
-        const got = pool[Math.floor(Math.random() * pool.length)];
-        if (got) {
-          artifacts = [...artifacts, got.id];
-          text += ` Ngươi nhận được ${got.name} (${got.rarity})!`;
-        } else {
-          text += " Tiếc thay bên trong chỉ còn lại bụi trần.";
-        }
-      }
-      const normalStone = e.stones
-        ? rollStoneDelta(s.stones, 0.03, 0.08, e.stones > 0 ? 1 : -1)
-        : { amount: 0, pct: 0 };
-      text = normalStone.amount ? replaceStoneLog(text, normalStone.amount, normalStone.pct) : text;
-      const isLargeCultivationChange = Math.abs(e.qiPct ?? 0) >= 0.15;
-      if (isLargeCultivationChange) {
+      // Luồng text stream dùng đúng pool 70% trung lập / 30% có biến động tài nguyên.
+      // Sự kiện trung lập luôn giữ type info và không tạo flash cộng/trừ tài nguyên.
+      const streamEvent = TEXT_STREAM_EVENTS[Math.floor(Math.random() * TEXT_STREAM_EVENTS.length)]!;
+      const isNeutral = streamEvent.type === "info";
+      const text = streamEvent.message;
+      const kind = isNeutral
+        ? "info"
+        : streamEvent.type === "reward"
+          ? "good"
+          : "bad";
+      const stones = streamEvent.baseLinhThach;
+      const qiDelta = streamEvent.baseLinhKhi / 100;
+
+      if (!isNeutral) {
         announce(
-          e.qiPct && e.qiPct > 0
-            ? `Kỳ ngộ bùng nổ tu vi! ${text}`
-            : `Tu vi tổn thất! ${text}`,
-          e.qiPct && e.qiPct > 0 ? "gain" : "loss",
-          e.qiPct && e.qiPct > 0 ? "resource" : undefined,
+          text,
+          kind === "good" ? "gain" : "loss",
+          "resource",
         );
-      } else if ((e.stones ?? 0) > 0 || (e.herbQty ?? 0) > 0 || e.artifact) {
-        setFlash({ id: ++logId, text, kind: "gain", sound: "resource" });
       }
+
       return {
         ...s,
-        herbs,
-        artifacts,
-        stones: Math.max(0, s.stones + (e.stones ?? 0)),
-        qi: Math.max(0, s.qi + qiNeeded(s) * (e.qiPct ?? 0)),
+        stones: Math.max(0, s.stones + stones),
+        qi: Math.max(0, s.qi + qiNeeded(s) * qiDelta),
         exploringUntil: Date.now() + 6000,
-        log: pushLog(s.log, text, e.kind),
+        log: pushLog(s.log, text, kind),
       };
     });
   }, [announce]);
