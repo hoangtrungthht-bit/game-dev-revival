@@ -154,7 +154,7 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "nhặt được lông vũ của Hỏa Phượng Yêu Thú, tỏa ra nhiệt khí dịu nhẹ. [+ 10% tu vi]" ,
+    text: "nhặt được lông vũ của Hỏa Phượng Yêu Thú. [+ 10% tu vi]",
     type: "reward",
     linhThach: 0,
     linhKhi: 10,
@@ -1320,7 +1320,7 @@ export function generate1000TextEvents() {
   for (let i = list.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [list[i]!, list[j]!] = [list[j]!, list[i]!];
-  }
+""  }
 
   return list;
 }
