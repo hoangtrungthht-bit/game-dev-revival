@@ -196,10 +196,10 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "nhặt được một cuốn tàn đản công pháp bị rách góc. [+ 40% tu vi] [+ 10 Linh Thạch]",
+    text: "nhặt được một cuốn tàn đản công pháp bị rách góc rồi bế quan cảm ngộ suốt 3 ngày đêm. [+ 20% tu vi] ",
     type: "reward",
-    linhThach: 10,
-    linhKhi: 40,
+    linhThach: 0,
+    linhKhi: 20,
   },
   {
     text: "bắt gặp linh miêu dẫn đường tới một kho báu nhỏ. [+ 15% tu vi] [+ 60 Linh Thạch]",
