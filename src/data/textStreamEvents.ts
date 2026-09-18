@@ -40,18 +40,18 @@ export const NEUTRAL_EVENTS = Array.from({ length: 100 }, (_, index) => ({
 // 10 Băng Liên và 5 Long Đảm Thảo (tỷ lệ 40/30/20/10 trong nhóm linh dược).
 const HERB_EVENTS = [
   ...Array.from({ length: 20 }, (_, index) => ({
-    text: `hái được Linh Thảo non bên triền núi, thu hoạch ${index % 3 + 2} cây. [+ ${index % 3 + 2} Linh Thảo]`,
+    text: `hái được Linh Thảo non bên triền núi, thu hoạch ${(index % 3) + 2} cây. [+ ${(index % 3) + 2} Linh Thảo]`,
     type: "reward" as const,
     linhThach: 0,
     linhKhi: 0,
-    linhThao: index % 3 + 2,
+    linhThao: (index % 3) + 2,
   })),
   ...Array.from({ length: 15 }, (_, index) => ({
-    text: `tìm thấy Huyết Chi đỏ thẫm trong khe đá, thu hoạch ${index % 2 + 1} cây. [+ ${index % 2 + 1} Huyết Chi]`,
+    text: `tìm thấy Huyết Chi đỏ thẫm trong khe đá, thu hoạch ${(index % 2) + 1} cây. [+ ${(index % 2) + 1} Huyết Chi]`,
     type: "reward" as const,
     linhThach: 0,
     linhKhi: 0,
-    huyetChi: index % 2 + 1,
+    huyetChi: (index % 2) + 1,
   })),
   ...Array.from({ length: 10 }, (_, index) => ({
     text: `vượt qua sườn núi băng giá và hái được Băng Liên quý hiếm. [+ 1 Băng Liên]`,
@@ -154,7 +154,7 @@ export const EVENTS = [
     linhKhi: 0,
   },
   {
-    text: "nhặt được lông vũ của Hỏa Phượng Yêu Thú, tỏa ra nhiệt khí dịu nhẹ. [+ 10% tu vi]" ,
+    text: "nhặt được lông vũ của Hỏa Phượng Yêu Thú. [+ 10% tu vi]",
     type: "reward",
     linhThach: 0,
     linhKhi: 10,
@@ -1320,6 +1320,7 @@ export function generate1000TextEvents() {
   for (let i = list.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [list[i]!, list[j]!] = [list[j]!, list[i]!];
+    ("");
   }
 
   return list;

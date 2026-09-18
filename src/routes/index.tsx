@@ -117,28 +117,72 @@ function Game() {
   }, [flash?.id, flash?.sound, audio.playSfx]);
 
   return (
-    <div className="min-h-screen bg-background text-foreground ink-bg">
-      <div className="mx-auto max-w-6xl px-3 pb-12 pt-5 sm:px-6 sm:pb-20 sm:pt-8">
+    <div className="min-h-screen bg-[#0b0f17] text-foreground ink-bg">
+      <div className="mx-auto w-full max-w-[960px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
         <header
-          className="root-aura grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 rounded-xl border border-border/60 bg-black px-3 pb-4 pt-3 sm:flex sm:flex-wrap sm:justify-between sm:gap-4 sm:px-4 sm:pb-5 sm:pt-4"
+          className="root-aura rounded-2xl border border-primary/25 bg-[#121824] p-3.5 shadow-2xl sm:p-5"
           style={rootAuraStyle(state.root)}
         >
-          <div className="min-w-0">
-            <p className="font-serif text-xs uppercase tracking-[0.4em] text-primary/80">
-              Tiên Lộ Vô Tận
-            </p>
-            <h1 className="mt-1 truncate font-serif text-2xl font-semibold tracking-wide sm:text-4xl">
-              Con đường tu tiên
-            </h1>
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="font-sans text-[10px] uppercase tracking-[0.28em] text-primary/80 sm:text-xs sm:tracking-[0.4em]">
+                Tiên Lộ Vô Tận
+              </p>
+              <h1 className="mt-0.5 truncate font-serif text-xl font-semibold leading-tight tracking-wide sm:text-4xl">
+                Con đường tu tiên
+              </h1>
+              <span className="mt-0.5 block font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-primary sm:text-xs">
+                Đăng Tiên Lộ
+              </span>
+            </div>
+            <button
+              onClick={audio.toggle}
+              className="rounded-md p-1.5 text-muted-foreground transition hover:text-foreground"
+              aria-label={audio.enabled ? "Tắt âm thanh" : "Bật âm thanh"}
+            >
+              {audio.enabled ? <Volume2 aria-hidden="true" /> : <VolumeX aria-hidden="true" />}
+            </button>
           </div>
-          <div className="col-span-2 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-sm sm:col-auto sm:flex sm:gap-3">
+
+          <div className="relative mt-7 flex items-start justify-between px-1" aria-label="Tiến trình đăng tiên lộ">
+            <div className="absolute left-3 right-3 top-[3.65rem] h-px bg-border" aria-hidden="true" />
+            {REALMS.map((realm, index) => {
+              const reached = index <= state.realm;
+              const numbers = state.destinyNumbers.slice(index * 3, index * 3 + 3);
+              return (
+                <div key={realm.name} className="relative z-10 flex min-w-0 flex-1 flex-col items-center gap-2">
+                  <div className="flex h-8 items-center justify-center">
+                    {index > 0 && reached && numbers.length === 3 ? (
+                      <span className="rounded border border-jade/50 bg-jade/10 px-1 py-0.5 font-mono text-[9px] font-bold tracking-[0.12em] text-jade">
+                        {numbers.join(" ")}
+                      </span>
+                    ) : (
+                      <span className="text-[9px] text-muted-foreground/40">•••</span>
+                    )}
+                  </div>
+                  <span
+                    className={cn(
+                      "block rounded-full border-2",
+                      index === state.realm ? "size-4 border-primary bg-primary shadow-[0_0_12px_rgba(245,158,11,0.6)]" : "size-3.5 border-border bg-secondary",
+                      reached && index !== state.realm && "border-primary/70 bg-primary/70",
+                    )}
+                  />
+                  <span className={cn("max-w-12 truncate text-center text-[8px] leading-tight sm:max-w-none sm:text-[10px]", reached ? "text-primary" : "text-muted-foreground/50")}>
+                    {realm.name}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-sm">
             <input
               value={state.name}
               onChange={(e) => actions.rename(e.target.value)}
-              className="min-h-11 min-w-0 w-full rounded-md border border-border bg-card/70 px-3 py-2 text-base outline-none focus:border-primary sm:min-h-0 sm:w-44 sm:py-1.5 sm:text-sm"
+              className="min-h-10 min-w-0 w-full rounded-md border border-border bg-card/70 px-3 py-2 text-base outline-none focus:border-primary sm:min-h-0 sm:w-44 sm:py-1.5 sm:text-sm"
               aria-label="Đạo hiệu"
             />
-            <span className="shrink-0 rounded-md border border-primary/40 bg-primary/10 px-3 py-2 text-primary sm:py-1.5">
+            <span className="shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1.5 text-xs text-primary sm:px-3">
               {fmt(state.stones)} linh thạch
             </span>
           </div>
@@ -545,8 +589,8 @@ function Game() {
       {showOnboarding && (
         <OnboardingModal
           onConfirm={(name, gender, digits) => {
-            const root = hashSpiritRoot(digits);
-            actions.onboard(name, gender, root);
+            const root = hashSpiritRoot(`${digits}:${Date.now()}:${gender}`);
+            actions.onboard(name, gender, root, digits);
             setResultRoot(root);
           }}
         />
@@ -631,9 +675,12 @@ function OnboardingModal({
         <p className="text-center font-serif text-xs uppercase tracking-[0.4em] text-primary/80">
           Tiên Lộ Vô Tận
         </p>
-        <h2 className="mt-3 text-center font-serif text-xl leading-relaxed">
-          Chào Đạo hữu ngày tốt lành, xin cho biết đại danh đạo hữu
-        </h2>
+  <h2 className="mt-3 text-center font-serif text-xl leading-relaxed">
+  Khai mở Thiên Cơ Thạch, định mệnh sẽ ghi nhớ đạo đồ của ngươi
+  </h2>
+  <p className="mt-2 text-center text-xs leading-relaxed text-muted-foreground">
+  Sáu con số, thời khắc xác nhận và giới tính sẽ kết thành hạt giống độc nhất, sinh ra 27 số Thiên Cơ cho 9 đại cảnh giới.
+  </p>
 
         <div className="mt-6 space-y-4">
           <div>

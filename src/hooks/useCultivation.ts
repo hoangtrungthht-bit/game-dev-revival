@@ -12,6 +12,7 @@ import {
   REALMS,
   SAVE_KEY,
   breakthroughChance,
+  createDestinyNumbers,
   isMajor,
   newGame,
   qiNeeded,
@@ -60,8 +61,8 @@ export function useCultivation() {
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
   const lastTick = useRef(0);
-  // Lưu ID của 30 sự kiện text gần nhất để ngăn lặp lại trong thời gian ngắn.
-  const recentEvents = useRef<string[]>([]);
+  // Lưu cả ID và nội dung của 30 sự kiện text gần nhất để chống lặp tuyệt đối.
+  const recentEvents = useRef<Array<{ id: string; message: string }>>([]);
 
   // Nạp dữ liệu đã lưu (chỉ chạy trên trình duyệt)
   useEffect(() => {
@@ -352,17 +353,22 @@ export function useCultivation() {
       }
 
       // Luồng text stream dùng pool 60% trung lập / 40% có biến động tài nguyên.
-      // Loại bỏ theo ID toàn bộ 30 sự kiện gần nhất trước khi random.
+      // Loại bỏ theo cả ID và nội dung toàn bộ 30 sự kiện gần nhất trước khi random.
       const availableEvents = TEXT_STREAM_EVENTS.filter(
-        (event) => !recentEvents.current.includes(event.id),
+        (event) =>
+          !recentEvents.current.some(
+            (recent) => recent.id === event.id || recent.message === event.message,
+          ),
       );
       // Pool có đủ sự kiện để luôn duy trì cooldown 30 lượt; không fallback về
       // danh sách đầy đủ vì fallback sẽ phá vỡ quy tắc chống lặp.
       if (availableEvents.length === 0) return s;
       const streamEvent = availableEvents[Math.floor(Math.random() * availableEvents.length)]!;
       recentEvents.current = [
-        streamEvent.id,
-        ...recentEvents.current.filter((id) => id !== streamEvent.id),
+        { id: streamEvent.id, message: streamEvent.message },
+        ...recentEvents.current.filter(
+          (recent) => recent.id !== streamEvent.id && recent.message !== streamEvent.message,
+        ),
       ].slice(0, 30);
   const isNeutral = streamEvent.type === "info";
   const text = streamEvent.message;
@@ -443,12 +449,18 @@ export function useCultivation() {
     setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo H���u Vô Danh" }));
   }, []);
 
-  const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot) => {
+  const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot, digits: string) => {
+    const seedCreatedAt = Date.now();
+    const destinySeed = `${digits}-${seedCreatedAt}-${gender}`;
+    const destinyNumbers = createDestinyNumbers(digits, gender, seedCreatedAt);
     setState((s) => ({
       ...s,
       name: name.slice(0, 24) || "Đạo Hữu Vô Danh",
       gender,
       root,
+      destinySeed,
+      destinyNumbers,
+      seedCreatedAt,
       log: pushLog(
         s.log,
         `Thiên địa cảm ứng, ${name} khai mở ${rootTitle(root)}, chính thức bước lên đạo đồ.`,
