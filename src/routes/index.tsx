@@ -118,7 +118,7 @@ function Game() {
 
   return (
     <div className="min-h-screen bg-[#0b0f17] text-foreground ink-bg">
-      <div className="mx-auto w-full max-w-[960px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
+      <div className="mx-auto w-full max-w-[560px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
         <header
           className="root-aura rounded-2xl border border-primary/25 bg-[#121824] p-3.5 shadow-2xl sm:p-5"
           style={rootAuraStyle(state.root)}
@@ -175,20 +175,9 @@ function Game() {
             })}
           </div>
 
-          <div className="mt-4 grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 text-sm">
-            <input
-              value={state.name}
-              onChange={(e) => actions.rename(e.target.value)}
-              className="min-h-10 min-w-0 w-full rounded-md border border-border bg-card/70 px-3 py-2 text-base outline-none focus:border-primary sm:min-h-0 sm:w-44 sm:py-1.5 sm:text-sm"
-              aria-label="Đạo hiệu"
-            />
-            <span className="shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1.5 text-xs text-primary sm:px-3">
-              {fmt(state.stones)} linh thạch
-            </span>
-          </div>
         </header>
 
-        <section className="mt-4 grid grid-cols-1 gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[340px_minmax(0,1fr)]">
+        <section className="mx-auto mt-4 grid max-w-[520px] grid-cols-1 gap-4 sm:mt-6 sm:gap-6 lg:max-w-none lg:grid-cols-[340px_minmax(0,1fr)]">
           {/* Bảng nhân vật */}
           <aside
             className={cn(
@@ -197,6 +186,18 @@ function Game() {
             )}
             style={{ ...rootPanelStyle(state.root), ...rootAuraStyle(state.root) }}
           >
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 pb-3 text-sm">
+              <input
+                value={state.name}
+                onChange={(e) => actions.rename(e.target.value)}
+                className="min-h-10 min-w-0 w-full rounded-md border border-border bg-card/70 px-3 py-2 text-base font-semibold outline-none focus:border-primary sm:min-h-0 sm:py-1.5 sm:text-sm"
+                aria-label="Đạo hiệu"
+              />
+              <span className="shrink-0 rounded-md border border-primary/40 bg-primary/10 px-2 py-1.5 text-xs text-primary sm:px-3">
+                {fmt(state.stones)} linh thạch
+              </span>
+            </div>
+            <div className="mb-4 h-px bg-border/70" aria-hidden="true" />
             <p className="text-xs uppercase tracking-widest text-muted-foreground">Cảnh giới</p>
             <h2 className="mt-1 font-serif text-2xl text-primary">{realmTitle(state)}</h2>
             <p className="mt-1 text-sm text-muted-foreground">{REALMS[state.realm]!.desc}</p>
