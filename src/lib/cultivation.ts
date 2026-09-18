@@ -212,9 +212,6 @@ export interface GameState {
   name: string;
   gender: "nam" | "nu";
   root: SpiritRoot | null;
-  destinySeed: string | null;
-  destinyNumbers: number[];
-  seedCreatedAt: number | null;
   manuals: string[];
   equippedManual: string | null;
   qi: number;
@@ -237,28 +234,11 @@ export interface GameState {
 
 export const SAVE_KEY = "tu-tien-save-v1";
 
-export function createDestinyNumbers(digits: string, gender: "nam" | "nu", createdAt: number): number[] {
-  let hash = 2166136261 >>> 0;
-  const source = `${digits}:${createdAt}:${gender}`;
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= source.charCodeAt(index);
-    hash = Math.imul(hash, 16777619) >>> 0;
-  }
-
-  return Array.from({ length: 27 }, () => {
-    hash = Math.imul(hash ^ (hash >>> 13), 1597334677) >>> 0;
-    return hash % 10;
-  });
-}
-
 export function newGame(): GameState {
   return {
     name: "Đạo Hữu Vô Danh",
     gender: "nam",
     root: null,
-    destinySeed: null,
-    destinyNumbers: [],
-    seedCreatedAt: null,
     manuals: [],
     equippedManual: null,
     qi: 0,
@@ -1004,7 +984,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     stones: -13,
   },
   {
-    text: "Ma thú khổng lồ rời hang, để l����� luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
+    text: "Ma thú khổng lồ rời hang, để l���� luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
     kind: "good",
     herb: "linhthao",
     herbQty: 3,
