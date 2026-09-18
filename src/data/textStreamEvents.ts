@@ -262,13 +262,13 @@ export const EVENTS = [
     linhKhi: 45,
   },
   {
-    text: "được linh thú quy phụng nhả ra một viên nội đan nhỏ. [+ 60% tu vi] [+ 25 Linh Th��ch]",
+    text: "được linh thú quy phụng nhả ra một viên nội đan nhỏ. [+ 60% tu vi] [+ 25 Linh Thạch]",
     type: "reward",
     linhThach: 25,
     linhKhi: 60,
   },
   {
-    text: "nhặt được v��i đồng tiền cổ ngập tràn ngọc khí. [+ 15% tu vi] [+ 35 Linh Thạch]",
+    text: "nhặt được vài đồng tiền cổ ngập tràn ngọc khí. [+ 15% tu vi] [+ 35 Linh Thạch]",
     type: "reward",
     linhThach: 35,
     linhKhi: 15,
@@ -520,7 +520,7 @@ export const EVENTS = [
     linhKhi: 45,
   },
   {
-    text: "đư���c chưởng môn khen ngợi và ban chút tài nguyên tu luyện. [+ 50% tu vi] [+ 50 Linh Thạch]",
+    text: "được chưởng môn khen ngợi và ban chút tài nguyên tu luyện. [+ 50% tu vi] [+ 50 Linh Thạch]",
     type: "reward",
     linhThach: 50,
     linhKhi: 50,
@@ -592,7 +592,7 @@ export const EVENTS = [
     linhKhi: 30,
   },
   {
-    text: "tìm đư���c bộ lông cáo chín đuôi tuyệt đẹp. [+ 80 Linh Thạch]",
+    text: "tìm được bộ lông cáo chín đuôi tuyệt đẹp. [+ 80 Linh Thạch]",
     type: "reward",
     linhThach: 80,
     linhKhi: 0,
@@ -1101,7 +1101,7 @@ export const EVENTS = [
     linhKhi: -10,
   },
   {
-    text: "b�� chuột cắn hỏng bao đựng linh thảo. [- 15% tu vi] [- 15 Linh Thạch]",
+    text: "bị chuột cắn hỏng bao đựng linh thảo. [- 15% tu vi] [- 15 Linh Thạch]",
     type: "penalty",
     linhThach: -15,
     linhKhi: -15,

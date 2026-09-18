@@ -318,7 +318,7 @@ export function useCultivation() {
   const explore = useCallback(() => {
     setState((s) => {
       if (Date.now() < s.exploringUntil) return s;
-  // Phân bổ encounter: 10% Kỳ Duyên (event epic), 20% Khảo Tâm Ma, 70% sự kiện thường.
+  // Phân bổ encounter: 10% Kỳ Duyên, 1% Khảo Tâm Ma (chỉ xuất hiện tượng trưng), 89% sự kiện thường.
   const eventRoll = Math.random();
   if (eventRoll < 0.1) {
     const e = rollEncounter(stageIndex(s), Math.random);
@@ -340,7 +340,7 @@ export function useCultivation() {
       log: pushLog(s.log, epicText, "epic"),
     };
   }
-  if (eventRoll < 0.3) {
+  if (eventRoll < 0.11) {
     const event = createQuizEvent(stageIndex(s), realmTitle(s));
         return {
           ...s,
