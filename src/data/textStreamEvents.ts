@@ -1326,7 +1326,6 @@ export const NEUTRAL_EVENTS: NeutralEvent[] = [
   { message: "Ngươi tìm được một hồ nước nóng tự nhiên giữa núi rừng. Ngươi ngồi ngâm chân cho đỡ mỏi, hơi nước bốc lên nghi ngút. Mệt mỏi của chuyến đi tan biến khá nhiều.", type: "neutral" },
   { message: "Nghe tiếng nói chuyện rôm rả phía trước, ngươi thấy một nhóm phàm nhân đang đào kênh dẫn nước. Họ làm việc hăng say, không ai than thở. Ngươi đứng xem một lát rồi đi tiếp, cảm thấy thích thú.", type: "neutral" },
   { message: "Ngươi đứng trên đỉnh núi ngắm mặt trời lặn dần sau dãy núi xa. Bầu trời đổi từ vàng sang cam rồi tím sẫm. Khi ngôi sao đầu tiên xuất hiện, ngươi mới hạ sơn tìm chỗ nghỉ.", type: "neutral" },
-  { message: "Ngươi đi ngang qua một nhà giàu phàm nhân đang phát cháo cho người nghèo. Xếp hàng nhận cháo đông vui nhưng trật tự. Ngươi xem từ xa rồi lặng lẽ bỏ đi, không muốn làm ồn.", type: "neutral" },
   { message: "Buổi sáng sương giá phủ trắng cả cỏ cây. Ngươi đi giữa rừng, mỗi bước chân để lại dấu trên lớp sương mỏng. Rét buốt nhưng tinh thần sảng khoái lạ thường.", type: "neutral" },
   { message: "Ngươi tìm thấy một mái chùa bỏ hoang giữa rừng sâu, tượng Phật đã mòn vẹt nhưng vẫn từ bi. Ngươi quét sạch lá trước tượng rồi ngồi thiền một canh giờ. Ra đi, ngươi không quên khép cửa lại cho khỏi gió.", type: "neutral" },
 ];
