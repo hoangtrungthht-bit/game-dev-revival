@@ -214,7 +214,7 @@ export const EVENTS = [
     linhKhi: 5,
   },
   {
-    text: "nhặt được một viên Linh Châu có công năng tụ khí. [+ 20% tu vi] ,
+    text: "nhặt được một viên Linh Châu có công năng tụ khí. [+ 20% tu vi]",
     type: "reward",
     linhThach: 0,
     linhKhi: 20,
@@ -1275,13 +1275,32 @@ export const EVENTS = [
 export function generate1000TextEvents() {
   const total = 1000;
   const neutralCount = Math.round(total * 0.6);
-  const list = [];
+  const list: Array<{
+    id: string;
+    message: string;
+    type: string;
+    baseLinhThach: number;
+    baseLinhKhi: number;
+    linhThao: number;
+    huyetChi: number;
+    bangLien: number;
+    longDamThao: number;
+  }> = [];
 
   for (let i = 0; i < total; i++) {
     const isNeutral = i < neutralCount;
     const act = ACTIONS[Math.floor(Math.random() * ACTIONS.length)]!;
     const source = isNeutral ? NEUTRAL_EVENTS : EVENTS;
-    const evt = source[Math.floor(Math.random() * source.length)]!;
+    const evt = source[Math.floor(Math.random() * source.length)]! as {
+      text?: string;
+      type: string;
+      linhThach: number;
+      linhKhi: number;
+      linhThao?: number;
+      huyetChi?: number;
+      bangLien?: number;
+      longDamThao?: number;
+    };
     const variance = isNeutral ? 1 : Math.floor(Math.random() * 3) + 1;
 
     list.push({
@@ -1300,7 +1319,7 @@ export function generate1000TextEvents() {
   // Trộn sau khi chia nhóm để tỷ lệ vẫn chính xác nhưng thứ tự không đoán trước.
   for (let i = list.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [list[i], list[j]] = [list[j], list[i]];
+    [list[i]!, list[j]!] = [list[j]!, list[i]!];
   }
 
   return list;

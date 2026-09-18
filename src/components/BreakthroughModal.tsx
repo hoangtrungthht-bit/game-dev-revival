@@ -96,7 +96,11 @@ export function BreakthroughModal({ notice, onClose, root }: BreakthroughModalPr
 
           <div className="mt-7 grid gap-3 text-left sm:grid-cols-2">
             <Info label="Đạo hiệu" value={data.name} />
-            <Info label="Thể chất / Linh căn" value={root ? rootTitle(root) : "Chưa khai mở"} className={root ? spiritRootClass(root) : undefined} />
+            <Info
+              label="Thể chất / Linh căn"
+              value={root ? rootTitle(root) : "Chưa khai mở"}
+              {...(root ? { className: spiritRootClass(root) } : {})}
+            />
             <Info label="Cảnh giới tiến vào" value={data.realmTitle} highlight />
             <Info label="Linh khí / giây" value={`+${data.qiRateGain.toFixed(1)}`} />
           </div>
