@@ -30,7 +30,8 @@ export const NEUTRAL_EVENTS = Array.from({ length: 100 }, (_, index) => ({
     "nghe tiếng chuông tông môn vọng lại từ xa.",
     "bắt gặp một cơn gió mát thổi qua sơn cốc.",
   ][index % 10] + ` (${index + 1})`,
-  type: "neutral",
+  // Dùng loại info để giao diện hiển thị trung tính và không tạo thông báo thưởng/phạt.
+  type: "info",
   linhThach: 0,
   linhKhi: 0,
 }));
@@ -234,7 +235,7 @@ export const EVENTS = [
     linhKhi: 60,
   },
   {
-    text: "nhặt được vài đồng tiền cổ ngập tràn ngọc khí. [+ 15% tu vi] [+ 35 Linh Thạch]",
+    text: "nhặt được v��i đồng tiền cổ ngập tràn ngọc khí. [+ 15% tu vi] [+ 35 Linh Thạch]",
     type: "reward",
     linhThach: 35,
     linhKhi: 15,
