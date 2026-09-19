@@ -1,5 +1,7 @@
 // Dữ liệu & logic lõi cho game tu tiên nhàn rỗi (idle cultivation RPG)
 
+import { destinyLuck, destinyQiMult } from "@/lib/destinySeed";
+
 export type HerbId = "linhthao" | "huyetchi" | "bangnien" | "longdam";
 export type PillId = "tukhi" | "phacanh" | "hotam" | "nguythan";
 
@@ -293,7 +295,8 @@ export function qiRate(s: GameState, now: number): number {
   const art = 1 + (artifactOf(s.equipped)?.mult ?? 0);
   const man = 1 + (manualOf(s.equippedManual)?.qiMult ?? 0);
   const buff = now < s.buffUntil ? 2 : 1;
-  return base * art * man * buff;
+  const destiny = destinyQiMult(s.destinySeed, s.realm);
+  return base * art * man * buff * destiny;
 }
 
 export function isMajor(s: Pick<GameState, "realm" | "level">): boolean {
@@ -312,6 +315,7 @@ export function breakthroughChance(s: GameState): number {
   c += artifactOf(s.equipped)?.luck ?? 0;
   c += manualOf(s.equippedManual)?.luck ?? 0;
   c += Math.min(0.2, s.failures * 0.05);
+  c += destinyLuck(s.destinySeed, s.realm);
   if (s.pills.phacanh > 0) c += 0.25;
   return Math.max(0.15, Math.min(0.97, c));
 }
