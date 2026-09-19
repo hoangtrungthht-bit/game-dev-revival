@@ -488,7 +488,9 @@ export function useCultivation() {
         "epic",
       ),
     }));
-  }, []);
+    },
+    [],
+  );
 
   const learnManual = useCallback((id: string) => {
     setState((s) => {
