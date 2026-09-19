@@ -21,6 +21,7 @@ import {
   stageIndex,
 } from "@/lib/cultivation";
 import { createQuizEvent, type AdventureReward } from "@/utils/adventureLogic";
+import { generateDestinySeed } from "@/lib/destinySeed";
 import { TEXT_STREAM_EVENTS } from "@/data/textStreamEvents";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
