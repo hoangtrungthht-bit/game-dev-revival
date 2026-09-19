@@ -472,12 +472,16 @@ export function useCultivation() {
     setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo Hữu Vô Danh" }));
   }, []);
 
-  const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot) => {
+  const onboard = useCallback(
+    (name: string, gender: "nam" | "nu", root: SpiritRoot, digits = "") => {
+    const createdAt = Date.now();
     setState((s) => ({
       ...s,
       name: name.slice(0, 24) || "Đạo Hữu Vô Danh",
       gender,
       root,
+      createdAt,
+      destinySeed: generateDestinySeed(digits, createdAt, root, gender),
       log: pushLog(
         s.log,
         `Thiên địa cảm ứng, ${name} khai mở ${rootTitle(root)}, chính thức bước lên đạo đồ.`,
