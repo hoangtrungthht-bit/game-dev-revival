@@ -230,6 +230,10 @@ export interface GameState {
   breakthroughs: number;
   log: LogEntry[];
   lastSeen: number;
+  /** Thiên Mệnh Đạo Cốt: chuỗi 27 chữ số, 9 đoạn cho 9 đại cảnh giới */
+  destinySeed: string | null;
+  /** Thời điểm khai mệnh (tạo nhân vật) */
+  createdAt: number;
 }
 
 export const SAVE_KEY = "tu-tien-save-v1";
@@ -264,6 +268,8 @@ export function newGame(): GameState {
       },
     ],
     lastSeen: 0,
+    destinySeed: null,
+    createdAt: 0,
   };
 }
 
