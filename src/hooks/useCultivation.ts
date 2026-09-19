@@ -228,6 +228,8 @@ export function useCultivation() {
                 qiRateGain: Math.max(0, qiRate(nextState, Date.now()) - previousRate),
               },
         });
+        // Đột phá đại cảnh giới: khai mở đoạn Thiên Mệnh tương ứng trên Đăng Tiên Lộ.
+        if (realm > s.realm) setSeedReveal(realm);
         return {
           ...s,
           realm,
