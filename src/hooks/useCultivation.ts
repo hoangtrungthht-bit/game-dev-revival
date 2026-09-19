@@ -512,6 +512,7 @@ export function useCultivation() {
 
   const reset = useCallback(() => {
     setState(newGame());
+    setSeedReveal(null);
     try {
       localStorage.removeItem(SAVE_KEY);
     } catch {
@@ -519,11 +520,14 @@ export function useCultivation() {
     }
   }, []);
 
+  const dismissSeedReveal = useCallback(() => setSeedReveal(null), []);
+
   return {
     state,
     now,
     loaded,
     flash,
-    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, dismissNotice },
+    seedReveal,
+    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, dismissNotice, dismissSeedReveal },
   };
 }
