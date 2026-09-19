@@ -21,7 +21,7 @@ import {
   stageIndex,
 } from "@/lib/cultivation";
 import { createQuizEvent, type AdventureReward } from "@/utils/adventureLogic";
-import { ACTIONS, EVENTS, NEUTRAL_EVENTS } from "@/data/textStreamEvents";
+import { TEXT_STREAM_EVENTS } from "@/data/textStreamEvents";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
 export interface GameNotice {
@@ -29,6 +29,9 @@ export interface GameNotice {
   text: string;
   kind: GameNoticeKind;
   sound?: "breakthrough" | "alchemy" | "resource";
+  breakthrough?:
+    | { type: "minor"; realmTitle: string; qiRateGain: number }
+    | { type: "major"; name: string; realmTitle: string; qiRateGain: number; lifespanGain: number };
 }
 
 let logId = 100;
@@ -57,6 +60,8 @@ export function useCultivation() {
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
   const lastTick = useRef(0);
+  // Lưu cả ID và nội dung của 30 sự kiện text gần nhất để chống lặp tuyệt đối.
+  const recentEvents = useRef<Array<{ id: string; message: string }>>([]);
 
   // Nạp dữ liệu đã lưu (chỉ chạy trên trình duyệt)
   useEffect(() => {
@@ -149,6 +154,8 @@ export function useCultivation() {
     setFlash({ id: ++logId, text, kind, ...(sound ? { sound } : {}) });
   }, []);
 
+  const dismissNotice = useCallback(() => setFlash(null), []);
+
   const meditate = useCallback(() => {
     setState((s) => ({ ...s, qi: s.qi + qiRate(s, Date.now()) * 1.5 + 2 }));
   }, []);
@@ -178,7 +185,27 @@ export function useCultivation() {
         const text = major
           ? `Thiên kiếp giáng lâm! Ngươi cắn răng chịu đủ chín đạo lôi đình, đột phá tới ${title}!`
           : `Kinh mạch thông suốt, ngươi tiến vào ${title}.`;
-        announce(text, major ? "major" : "minor", "breakthrough");
+        const previousRate = qiRate(s, Date.now());
+        const nextState = { ...s, realm, level };
+        setFlash({
+          id: ++logId,
+          text,
+          kind: major ? "major" : "minor",
+          sound: "breakthrough",
+          breakthrough: major
+            ? {
+                type: "major",
+                name: s.name,
+                realmTitle: title,
+                qiRateGain: Math.max(0, qiRate(nextState, Date.now()) - previousRate),
+                lifespanGain: 10 + stageIndex(nextState) * 3,
+              }
+            : {
+                type: "minor",
+                realmTitle: title,
+                qiRateGain: Math.max(0, qiRate(nextState, Date.now()) - previousRate),
+              },
+        });
         return {
           ...s,
           realm,
@@ -250,7 +277,7 @@ export function useCultivation() {
           log: pushLog(s.log, "Thần thức ngưng tụ, tốc độ hấp thu linh khí tăng vọt.", "good"),
         };
       }
-      return s; // Phá Cảnh & Hộ Tâm tự động dùng khi đ��t phá
+      return s; // Phá Cảnh & Hộ Tâm tự động dùng khi đột phá
     });
   }, []);
 
@@ -292,7 +319,7 @@ export function useCultivation() {
   const explore = useCallback(() => {
     setState((s) => {
       if (Date.now() < s.exploringUntil) return s;
-  // Phân bổ encounter: 10% Kỳ Duyên (event epic), 20% Khảo Tâm Ma, 70% sự kiện thường.
+  // Phân bổ encounter: 10% Kỳ Duyên, 1% Khảo Tâm Ma (chỉ xuất hiện tượng trưng), 89% sự kiện thường.
   const eventRoll = Math.random();
   if (eventRoll < 0.1) {
     const e = rollEncounter(stageIndex(s), Math.random);
@@ -314,7 +341,7 @@ export function useCultivation() {
       log: pushLog(s.log, epicText, "epic"),
     };
   }
-  if (eventRoll < 0.3) {
+  if (eventRoll < 0.11) {
     const event = createQuizEvent(stageIndex(s), realmTitle(s));
         return {
           ...s,
@@ -324,35 +351,61 @@ export function useCultivation() {
         };
       }
 
-      // Sự kiện thường: 70% sự kiện trung lập NEUTRAL_EVENTS, 30% cơ duyên/rủi ro từ EVENTS.
-      if (Math.random() < 0.7) {
-        const randomEvent = NEUTRAL_EVENTS[Math.floor(Math.random() * NEUTRAL_EVENTS.length)]!;
-        return {
-          ...s,
-          exploringUntil: Date.now() + 6000,
-          log: pushLog(s.log, randomEvent.message, "info"),
-        };
-      }
-      const act = ACTIONS[Math.floor(Math.random() * ACTIONS.length)]!;
-      const e = EVENTS[Math.floor(Math.random() * EVENTS.length)]!;
-      const text = `${act} ngươi ${e.text}`;
-      const qiDelta = qiNeeded(s) * (e.linhKhi / 100);
-      const isLargeCultivationChange = Math.abs(e.linhKhi) >= 15 || Math.abs(e.linhThach) >= 40;
-      if (isLargeCultivationChange) {
+      // Luồng text stream dùng pool 60% trung lập / 40% có biến động tài nguyên.
+      // Loại bỏ theo cả ID và nội dung toàn bộ 30 sự kiện gần nhất trước khi random.
+      const availableEvents = TEXT_STREAM_EVENTS.filter(
+        (event) =>
+          !recentEvents.current.some(
+            (recent) => recent.id === event.id || recent.message === event.message,
+          ),
+      );
+      // Pool có đủ sự kiện để luôn duy trì cooldown 30 lượt; không fallback về
+      // danh sách đầy đủ vì fallback sẽ phá vỡ quy tắc chống lặp.
+      if (availableEvents.length === 0) return s;
+      const streamEvent = availableEvents[Math.floor(Math.random() * availableEvents.length)]!;
+      recentEvents.current = [
+        { id: streamEvent.id, message: streamEvent.message },
+        ...recentEvents.current.filter(
+          (recent) => recent.id !== streamEvent.id && recent.message !== streamEvent.message,
+        ),
+      ].slice(0, 30);
+  const isNeutral = streamEvent.type === "info";
+  const text = streamEvent.message;
+      const kind = isNeutral
+        ? "info"
+        : streamEvent.type === "reward"
+          ? "good"
+          : "bad";
+      const stones = streamEvent.baseLinhThach;
+      const qiDelta = streamEvent.baseLinhKhi / 100;
+      const herbDelta = {
+        linhthao: streamEvent.linhThao,
+        huyetchi: streamEvent.huyetChi,
+        bangnien: streamEvent.bangLien,
+        longdam: streamEvent.longDamThao,
+      };
+
+      if (!isNeutral) {
         announce(
-          e.linhKhi > 0 || e.linhThach > 0
-            ? `Kỳ ngộ bùng nổ tu vi! ${text}`
-            : `Tu vi tổn thất! ${text}`,
-          e.linhKhi > 0 || e.linhThach > 0 ? "gain" : "loss",
-          e.linhKhi > 0 || e.linhThach > 0 ? "resource" : undefined,
+          text,
+          kind === "good" ? "gain" : "loss",
+          "resource",
         );
       }
+
       return {
         ...s,
-        stones: Math.max(0, s.stones + e.linhThach),
-        qi: Math.max(0, s.qi + qiDelta),
+        stones: Math.max(0, s.stones + stones),
+        herbs: {
+          ...s.herbs,
+          linhthao: Math.max(0, s.herbs.linhthao + (herbDelta.linhthao ?? 0)),
+          huyetchi: Math.max(0, s.herbs.huyetchi + (herbDelta.huyetchi ?? 0)),
+          bangnien: Math.max(0, s.herbs.bangnien + (herbDelta.bangnien ?? 0)),
+          longdam: Math.max(0, s.herbs.longdam + (herbDelta.longdam ?? 0)),
+        },
+        qi: Math.max(0, s.qi + qiNeeded(s) * qiDelta),
         exploringUntil: Date.now() + 6000,
-        log: pushLog(s.log, text, e.type === "reward" ? "good" : "bad"),
+        log: pushLog(s.log, text, kind),
       };
     });
   }, [announce]);
@@ -441,6 +494,6 @@ export function useCultivation() {
     now,
     loaded,
     flash,
-    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure },
+    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, dismissNotice },
   };
 }

@@ -385,7 +385,7 @@ const BASE_EVENTS: ModalEventData[] = [
       winRate: 0.75,
       reqElement: "thuy",
       successText: "Cấm chế như nước chảy qua kẽ tay, ngươi tiến vào.",
-      failText: "Cấm chế quá ph������c tạp, ngươi bị đẩy ra.",
+      failText: "Cấm chế quá phức tạp, ngươi bị đẩy ra.",
       rewards: { artifact: true, stones: 80 },
       penalties: { qiPct: -0.08 },
     },
@@ -517,7 +517,7 @@ const BASE_EVENTS: ModalEventData[] = [
     id: "son_block_duong",
     title: "Cự Thạch Chặn Đường",
     description:
-      "Một tảng cự thạch ngàn tấn lăn xuống chặn ngang lối mòn. Quanh đi quẩn lại không có đường vòng, ngươi ph��i quyết định nhanh.",
+      "Một tảng cự thạch ngàn tấn lăn xuống chặn ngang lối mòn. Quanh đi quẩn lại không có đường vòng, ngươi phải quyết định nhanh.",
     option1: {
       text: "Dùng Thổ Linh Căn làm cự thạch nhường đường",
       winRate: 0.8,
@@ -550,7 +550,7 @@ const BASE_EVENTS: ModalEventData[] = [
       penalties: { qiPct: 0.05 },
     },
     option2: {
-      text: "Hái vài bông linh hoa quanh thác rồi đi ti���p",
+      text: "Hái vài bông linh hoa quanh thác rồi đi tiếp",
       winRate: 0.65,
       successText: "Linh hoa hái được đầy tay, thơm ngát cả túi trữ vật.",
       failText: "Dẫm phải bùn lầy, ngươi vừa mất công vừa mất dược liệu.",
@@ -588,7 +588,7 @@ const BASE_EVENTS: ModalEventData[] = [
     option1: {
       text: "Mua bí kíp không nguồn gốc",
       winRate: 0.45,
-      successText: "Bí kíp thật! Ngươi học thêm một đoạn kh��u quyết tu luyện.",
+      successText: "Bí kíp thật! Ngươi học thêm một đoạn khẩu quyết tu luyện.",
       failText: "Hàng giả chứa ma khí, ngươi phải tốn công xua đuổi.",
       rewards: { qiPct: 0.15 },
       penalties: { qiPct: -0.12, stones: -40 },
@@ -729,8 +729,8 @@ const BASE_EVENTS: ModalEventData[] = [
     option2: {
       text: "Đào mộ lấy tài nguyên ngay lập tức",
       winRate: 0.35,
-      successText: "Mộ chứa nhiều linh thạch tùy táng, ng��ơi thu lợi lớn!",
-      failText: "Uy áp c��a mộ chủ trấn xuống, ngươi bỏ chạy trắng tay.",
+      successText: "Mộ chứa nhiều linh thạch tùy táng, ngươi thu lợi lớn!",
+      failText: "Uy áp của mộ chủ trấn xuống, ngươi bỏ chạy trắng tay.",
       rewards: { stones: 160 },
       penalties: { qiPct: -0.15, stones: -30 },
     },
@@ -861,7 +861,7 @@ const BASE_EVENTS: ModalEventData[] = [
     option2: {
       text: "Đào lấy vài khối long linh thạch",
       winRate: 0.7,
-      successText: "Long linh thạch trân quý, đủ đổi một m��n pháp khí nhỏ.",
+      successText: "Long linh thạch trân quý, đủ đổi một món pháp khí nhỏ.",
       failText: "Long mạch thu hồi, đất khép lại nuốt mất dụng cụ của ngươi.",
       rewards: { stones: 140 },
       penalties: { stones: -35 },
@@ -893,7 +893,7 @@ const BASE_EVENTS: ModalEventData[] = [
     id: "cuu_tinh_lien_tru",
     title: "Lôi Kiếp Dư Ba",
     description:
-      "Nơi đây vừa xảy ra một cơn thiên kiếp, đất nứt đá toé, tàn dư lôi điện vẫn chập chờn trên không. Linh th��ch kiếp hậu nằm rải rác.",
+      "Nơi đây vừa xảy ra một cơn thiên kiếp, đất nứt đá toé, tàn dư lôi điện vẫn chập chờn trên không. Linh thạch kiếp hậu nằm rải rác.",
     option1: {
       text: "Lao vào nhặt linh thạch kiếp hậu",
       winRate: 0.45,
@@ -1016,7 +1016,7 @@ function createExpandedAdventureEvents(): ModalEventData[] {
     ["Kiếm Các", "Một kiếm các", "kiếm ý sắc bén", "kim" as ElementId],
     ["Mê Cảnh", "Một mê cảnh", "ảo quang kỳ dị", undefined],
     ["Vân Hải", "Một vân hải", "vân khí dày đặc", undefined],
-    ["T�� Trúc Lâm", "Một tử trúc lâm", "mộc khí xanh biếc", "moc" as ElementId],
+    ["Tử Trúc Lâm", "Một tử trúc lâm", "mộc khí xanh biếc", "moc" as ElementId],
     ["Lôi Đài", "Một lôi đài", "lôi quang rền vang", undefined],
     ["Dược Cốc", "Một dược cốc", "hương thuốc nồng đậm", "moc" as ElementId],
     ["Băng Cung", "Một băng cung", "băng linh lạnh buốt", "thuy" as ElementId],
