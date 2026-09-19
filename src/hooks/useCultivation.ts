@@ -37,6 +37,15 @@ export interface GameNotice {
 
 let logId = 100;
 
+function hashName(name: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < name.length; i++) {
+    h ^= name.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0) % 1_000_000;
+}
+
 function rollStoneDelta(current: number, minPct: number, maxPct: number, sign: 1 | -1): { amount: number; pct: number } {
   const pct = minPct + Math.random() * (maxPct - minPct);
   const amount = Math.max(5, Math.round(current * pct));
