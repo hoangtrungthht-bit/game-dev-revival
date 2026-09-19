@@ -60,6 +60,8 @@ export function useCultivation() {
   const [loaded, setLoaded] = useState(false);
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
+  // Đoạn Thiên Mệnh vừa được khai mở (index 0-8) để chạy hiệu ứng trên Đăng Tiên Lộ.
+  const [seedReveal, setSeedReveal] = useState<number | null>(null);
   const lastTick = useRef(0);
   // Lưu cả ID và nội dung của 30 sự kiện text gần nhất để chống lặp tuyệt đối.
   const recentEvents = useRef<Array<{ id: string; message: string }>>([]);
@@ -71,6 +73,16 @@ export function useCultivation() {
       if (raw) {
         const saved = { ...newGame(), ...(JSON.parse(raw) as GameState) };
         const t = Date.now();
+        // Nhân vật cũ chưa có Thiên Mệnh Đạo Cốt: sinh bù một lần, xác định theo hồ sơ.
+        if (saved.root && !saved.destinySeed) {
+          if (!saved.createdAt) saved.createdAt = saved.lastSeen || t;
+          saved.destinySeed = generateDestinySeed(
+            String(Math.abs(hashName(saved.name))).slice(0, 6),
+            saved.createdAt,
+            saved.root,
+            saved.gender,
+          );
+        }
         const away = Math.min(8 * 3600, Math.max(0, (t - (saved.lastSeen || t)) / 1000));
         if (away > 60) {
           const gain = qiRate({ ...saved, buffUntil: 0 }, t) * away * 0.5;
