@@ -112,7 +112,7 @@ export const ELEMENTS: ElementId[] = ["kim", "moc", "thuy", "hoa", "tho"];
 export const ELEMENT_INFO: Record<ElementId, { name: string; hex: string; dark: boolean }> = {
   kim: { name: "Kim", hex: "#F3F4F6", dark: false },
   moc: { name: "Mộc", hex: "#22C55E", dark: false },
-  thuy: { name: "Thủy", hex: "#18181B", dark: true },
+  thuy: { name: "Thủy", hex: "#22D3EE", dark: true },
   hoa: { name: "Hỏa", hex: "#EF4444", dark: true },
   tho: { name: "Thổ", hex: "#EAB308", dark: false },
 };
@@ -515,7 +515,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     herbQty: 2,
   },
   {
-    text: "Ngươi mua được bản đồ bí cảnh từ chợ đen và ph��t hiện túi tiền đã vơi. [- 18 Linh Thạch]",
+    text: "Ngươi mua được bản đồ bí cảnh từ chợ đen và phát hiện túi tiền đã vơi. [- 18 Linh Thạch]",
     kind: "info",
     stones: -18,
   },
@@ -984,7 +984,7 @@ const ADVENTURE_EVENT_RECORDS: Encounter[] = [
     stones: -13,
   },
   {
-    text: "Ma thú khổng lồ rời hang, để l��� luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
+    text: "Ma thú khổng lồ rời hang, để lại luống linh thảo chưa ai chạm tới. [+ 3 Linh Thảo]",
     kind: "good",
     herb: "linhthao",
     herbQty: 3,
