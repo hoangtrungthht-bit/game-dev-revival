@@ -29,6 +29,7 @@ import { useGameAudio } from "@/hooks/useGameAudio";
 import { cn } from "@/lib/utils";
 import { AdventureModal } from "@/components/AdventureModal";
 import { BreakthroughModal } from "@/components/BreakthroughModal";
+import { AscensionRoad } from "@/components/AscensionRoad";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -97,7 +98,7 @@ function spiritRootBadgeClass(root: SpiritRoot) {
 }
 
 function Game() {
-  const { state, now, loaded, flash, actions } = useCultivation();
+  const { state, now, loaded, flash, seedReveal, actions } = useCultivation();
   const audio = useGameAudio();
   const [tab, setTab] = useState<Tab>("tuluyen");
   const [resultRoot, setResultRoot] = useState<SpiritRoot | null>(null);
@@ -111,6 +112,11 @@ function Game() {
   const chance = breakthroughChance(state);
   const major = isMajor(state);
   const stage = stageIndex(state);
+  // Tiến trình trong đại cảnh giới hiện tại: các tầng đã qua + % linh khí tầng hiện tại
+  const realmFrac = Math.min(
+    1,
+    ((state.level - 1) + pct / 100) / REALMS[state.realm]!.levels,
+  );
 
   useEffect(() => {
     if (flash?.sound) audio.playSfx(flash.sound);
@@ -120,7 +126,7 @@ function Game() {
     <div className="min-h-screen bg-[#0b0f17] text-foreground ink-bg">
       <div className="mx-auto w-full max-w-[1180px] px-2 pb-12 pt-3 sm:px-6 sm:pb-20 sm:pt-8">
         <header
-          className="root-aura rounded-2xl border border-primary/25 bg-[#121824] p-3.5 shadow-2xl sm:p-5"
+          className="root-aura rounded-2xl border border-border bg-black p-3.5 shadow-2xl sm:p-5"
           style={rootAuraStyle(state.root)}
         >
           <div className="flex items-start justify-between gap-3">
@@ -131,9 +137,6 @@ function Game() {
               <h1 className="mt-0.5 truncate font-serif text-xl font-semibold leading-tight tracking-wide sm:text-4xl">
                 Con đường tu tiên
               </h1>
-              <span className="mt-0.5 block font-sans text-[10px] font-bold uppercase tracking-[0.18em] text-primary sm:text-xs">
-                Đăng Tiên Lộ
-              </span>
             </div>
             <button
               onClick={audio.toggle}
@@ -144,28 +147,14 @@ function Game() {
             </button>
           </div>
 
-          <div className="relative mt-6 flex items-center justify-between px-3 pb-1" aria-label="Tiến trình đăng tiên lộ">
-            <div className="absolute left-5 right-5 top-1/2 h-1 -translate-y-0.5 rounded-full bg-border" aria-hidden="true" />
-            {Array.from({ length: 9 }, (_, index) => {
-              const reached = index <= Math.min(8, stage);
-              return (
-                <div key={index} className="relative z-10 flex items-center justify-center">
-                  {index === 0 && reached && (
-                    <span className="absolute -top-6 whitespace-nowrap rounded border border-jade/50 bg-jade/10 px-1.5 py-0.5 font-mono text-[10px] font-bold text-jade">
-                      {stage + 1}
-                    </span>
-                  )}
-                  <span
-                    className={cn(
-                      "block rounded-full border-2",
-                      index === 0 && reached ? "size-4 border-primary bg-primary shadow-[0_0_12px_rgba(245,158,11,0.6)]" : "size-3.5 border-border bg-secondary",
-                      reached && index > 0 && "border-primary/70 bg-primary/70",
-                    )}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <AscensionRoad
+            seed={state.destinySeed}
+            realm={state.realm}
+            realmFrac={realmFrac}
+            revealIndex={seedReveal}
+            onRevealDone={actions.dismissSeedReveal}
+          />
+
 
         </header>
 
@@ -577,7 +566,7 @@ function Game() {
         <OnboardingModal
           onConfirm={(name, gender, digits) => {
             const root = hashSpiritRoot(digits);
-            actions.onboard(name, gender, root);
+            actions.onboard(name, gender, root, digits);
             setResultRoot(root);
           }}
         />

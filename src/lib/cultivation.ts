@@ -1,5 +1,7 @@
 // Dữ liệu & logic lõi cho game tu tiên nhàn rỗi (idle cultivation RPG)
 
+import { destinyLuck, destinyQiMult } from "@/lib/destinySeed";
+
 export type HerbId = "linhthao" | "huyetchi" | "bangnien" | "longdam";
 export type PillId = "tukhi" | "phacanh" | "hotam" | "nguythan";
 
@@ -230,6 +232,10 @@ export interface GameState {
   breakthroughs: number;
   log: LogEntry[];
   lastSeen: number;
+  /** Thiên Mệnh Đạo Cốt: chuỗi 27 chữ số, 9 đoạn cho 9 đại cảnh giới */
+  destinySeed: string | null;
+  /** Thời điểm khai mệnh (tạo nhân vật) */
+  createdAt: number;
 }
 
 export const SAVE_KEY = "tu-tien-save-v1";
@@ -264,6 +270,8 @@ export function newGame(): GameState {
       },
     ],
     lastSeen: 0,
+    destinySeed: null,
+    createdAt: 0,
   };
 }
 
@@ -281,13 +289,28 @@ export function artifactOf(id: string | null): Artifact | undefined {
   return ARTIFACTS.find((a) => a.id === id);
 }
 
+// Hệ số hấp thu linh lực theo phẩm chất Linh Căn.
+// Hạ Phẩm là mốc chuẩn (1.0), mỗi cấp cao hơn +20% so với cấp liền trước.
+export const GRADE_QI_MULT: Record<GradeId, number> = {
+  ha: 1,
+  trung: 1.2,
+  thuong: 1.2 * 1.2,
+  cuc: 1.2 * 1.2 * 1.2,
+};
+
+export function rootQiMult(root: SpiritRoot | null): number {
+  return root ? GRADE_QI_MULT[root.grade] : 1;
+}
+
 export function qiRate(s: GameState, now: number): number {
   const stage = stageIndex(s);
   const base = 1 + stage * 0.9 + Math.pow(stage, 1.75) * 0.12;
   const art = 1 + (artifactOf(s.equipped)?.mult ?? 0);
   const man = 1 + (manualOf(s.equippedManual)?.qiMult ?? 0);
   const buff = now < s.buffUntil ? 2 : 1;
-  return base * art * man * buff;
+  const destiny = destinyQiMult(s.destinySeed, s.realm);
+  const rootMult = rootQiMult(s.root);
+  return base * art * man * buff * destiny * rootMult;
 }
 
 export function isMajor(s: Pick<GameState, "realm" | "level">): boolean {
@@ -306,6 +329,7 @@ export function breakthroughChance(s: GameState): number {
   c += artifactOf(s.equipped)?.luck ?? 0;
   c += manualOf(s.equippedManual)?.luck ?? 0;
   c += Math.min(0.2, s.failures * 0.05);
+  c += destinyLuck(s.destinySeed, s.realm);
   if (s.pills.phacanh > 0) c += 0.25;
   return Math.max(0.15, Math.min(0.97, c));
 }

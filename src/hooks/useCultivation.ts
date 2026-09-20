@@ -21,6 +21,7 @@ import {
   stageIndex,
 } from "@/lib/cultivation";
 import { createQuizEvent, type AdventureReward } from "@/utils/adventureLogic";
+import { generateDestinySeed } from "@/lib/destinySeed";
 import { TEXT_STREAM_EVENTS } from "@/data/textStreamEvents";
 
 export type GameNoticeKind = "minor" | "major" | "alchemy" | "gain" | "loss";
@@ -35,6 +36,15 @@ export interface GameNotice {
 }
 
 let logId = 100;
+
+function hashName(name: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < name.length; i++) {
+    h ^= name.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0) % 1_000_000;
+}
 
 function rollStoneDelta(current: number, minPct: number, maxPct: number, sign: 1 | -1): { amount: number; pct: number } {
   const pct = minPct + Math.random() * (maxPct - minPct);
@@ -59,6 +69,8 @@ export function useCultivation() {
   const [loaded, setLoaded] = useState(false);
   const [now, setNow] = useState(0);
   const [flash, setFlash] = useState<GameNotice | null>(null);
+  // Đoạn Thiên Mệnh vừa được khai mở (index 0-8) để chạy hiệu ứng trên Đăng Tiên Lộ.
+  const [seedReveal, setSeedReveal] = useState<number | null>(null);
   const lastTick = useRef(0);
   // Lưu cả ID và nội dung của 30 sự kiện text gần nhất để chống lặp tuyệt đối.
   const recentEvents = useRef<Array<{ id: string; message: string }>>([]);
@@ -70,6 +82,16 @@ export function useCultivation() {
       if (raw) {
         const saved = { ...newGame(), ...(JSON.parse(raw) as GameState) };
         const t = Date.now();
+        // Nhân vật cũ chưa có Thiên Mệnh Đạo Cốt: sinh bù một lần, xác định theo hồ sơ.
+        if (saved.root && !saved.destinySeed) {
+          if (!saved.createdAt) saved.createdAt = saved.lastSeen || t;
+          saved.destinySeed = generateDestinySeed(
+            String(Math.abs(hashName(saved.name))).slice(0, 6),
+            saved.createdAt,
+            saved.root,
+            saved.gender,
+          );
+        }
         const away = Math.min(8 * 3600, Math.max(0, (t - (saved.lastSeen || t)) / 1000));
         if (away > 60) {
           const gain = qiRate({ ...saved, buffUntil: 0 }, t) * away * 0.5;
@@ -206,6 +228,9 @@ export function useCultivation() {
                 qiRateGain: Math.max(0, qiRate(nextState, Date.now()) - previousRate),
               },
         });
+        // Hoàn thành đại cảnh giới hiện tại mới khai mở đoạn Thiên Mệnh của mốc đó.
+        // Ví dụ: Luyện Khí → Trúc Cơ sẽ mở đoạn 0, không mở sẵn đoạn Trúc Cơ.
+        if (realm > s.realm) setSeedReveal(s.realm);
         return {
           ...s,
           realm,
@@ -448,19 +473,25 @@ export function useCultivation() {
     setState((s) => ({ ...s, name: name.slice(0, 24) || "Đạo Hữu Vô Danh" }));
   }, []);
 
-  const onboard = useCallback((name: string, gender: "nam" | "nu", root: SpiritRoot) => {
+  const onboard = useCallback(
+    (name: string, gender: "nam" | "nu", root: SpiritRoot, digits = "") => {
+    const createdAt = Date.now();
     setState((s) => ({
       ...s,
       name: name.slice(0, 24) || "Đạo Hữu Vô Danh",
       gender,
       root,
+      createdAt,
+      destinySeed: generateDestinySeed(digits, createdAt, root, gender),
       log: pushLog(
         s.log,
         `Thiên địa cảm ứng, ${name} khai mở ${rootTitle(root)}, chính thức bước lên đạo đồ.`,
         "epic",
       ),
     }));
-  }, []);
+    },
+    [],
+  );
 
   const learnManual = useCallback((id: string) => {
     setState((s) => {
@@ -482,6 +513,7 @@ export function useCultivation() {
 
   const reset = useCallback(() => {
     setState(newGame());
+    setSeedReveal(null);
     try {
       localStorage.removeItem(SAVE_KEY);
     } catch {
@@ -489,11 +521,14 @@ export function useCultivation() {
     }
   }, []);
 
+  const dismissSeedReveal = useCallback(() => setSeedReveal(null), []);
+
   return {
     state,
     now,
     loaded,
     flash,
-    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, dismissNotice },
+    seedReveal,
+    actions: { meditate, breakthrough, brew, usePill, explore, equip, rename, reset, onboard, learnManual, equipManual, resolveAdventure, dismissNotice, dismissSeedReveal },
   };
 }
