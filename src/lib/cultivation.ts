@@ -289,6 +289,19 @@ export function artifactOf(id: string | null): Artifact | undefined {
   return ARTIFACTS.find((a) => a.id === id);
 }
 
+// Hệ số hấp thu linh lực theo phẩm chất Linh Căn.
+// Hạ Phẩm là mốc chuẩn (1.0), mỗi cấp cao hơn +20% so với cấp liền trước.
+export const GRADE_QI_MULT: Record<GradeId, number> = {
+  ha: 1,
+  trung: 1.2,
+  thuong: 1.2 * 1.2,
+  cuc: 1.2 * 1.2 * 1.2,
+};
+
+export function rootQiMult(root: SpiritRoot | null): number {
+  return root ? GRADE_QI_MULT[root.grade] : 1;
+}
+
 export function qiRate(s: GameState, now: number): number {
   const stage = stageIndex(s);
   const base = 1 + stage * 0.9 + Math.pow(stage, 1.75) * 0.12;
@@ -296,7 +309,8 @@ export function qiRate(s: GameState, now: number): number {
   const man = 1 + (manualOf(s.equippedManual)?.qiMult ?? 0);
   const buff = now < s.buffUntil ? 2 : 1;
   const destiny = destinyQiMult(s.destinySeed, s.realm);
-  return base * art * man * buff * destiny;
+  const rootMult = rootQiMult(s.root);
+  return base * art * man * buff * destiny * rootMult;
 }
 
 export function isMajor(s: Pick<GameState, "realm" | "level">): boolean {
